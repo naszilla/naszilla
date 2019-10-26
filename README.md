@@ -30,11 +30,12 @@ BANANAS is a neural architecture search (NAS) algorithm which uses Bayesian opti
 
 ## Evaluate pretrained BANANAS architecture
 The best architecture found by BANANAS on the DARTS search space achieved 2.57% test error. To evaluate our pretrained neural architecture,
-- Download our fork of the darts repo here: https://github.com/naszilla/darts
-- If the repo is not in your home directory, i.e., `~/darts`, then update line 7 of `bananas/darts/data.py` and line 8 of `bananas/train_arch_runner.py` with the correct path.
-- Download the weights [bananas.pt](https://drive.google.com/file/d/1d8jnI0R9fvXBjkIY7CRogyxynEh6TWu_/view?usp=sharing) and put it inside the folder `darts/cnn`
+- Download our fork of the darts repo: https://github.com/naszilla/darts
+- If the repo is not in your home directory, i.e., `~/darts`, then update line 7 of `bananas/darts/data.py` and line 8 of `bananas/train_arch_runner.py` with the correct path to this repo
+- Download the weights [bananas.pt](https://drive.google.com/file/d/1d8jnI0R9fvXBjkIY7CRogyxynEh6TWu_/view?usp=sharing) and put it inside the folder `<path-to-darts>/cnn`
+
 ```
-cd darts/cnn; python test.py --model_path bananas.pt
+cd <path-to-darts>/cnn; python test.py --model_path bananas.pt
 ```
 The error on the test set should be 2.57%. This can be run on a CPU or GPU, but it will be faster on a GPU.
 
@@ -48,6 +49,7 @@ The best neural architecture found by BANANAS on CIFAR-10. Convolutional cell (l
 
 ## Train BANANAS architecture
 Train the best architecture found by BANANAS.
+
 ```
 python train.py --auxiliary --cutout
 ```
@@ -55,9 +57,9 @@ This will train the architecture from scratch, which takes about 32 hours on a N
 The final test error should be 2.57%.
 
 ## Run BANANAS on the NASBench search space
-To run BANANAS on NASBench, go back into the bananas repo.
-- Download nasbench_only108.tfrecord and put it into the bananas folder
-- Make sure the darts repo above is located at `~/darts`
+To run BANANAS on NASBench,
+- Download `nasbench_only108.tfrecord` and place it in the top level folder of this repo
+
 ```
 python run_experiments_sequential.py
 ```
@@ -70,6 +72,7 @@ To customize your experiment, open `params.py`. Here, you can change the hyperpa
 
 ## Run BANANAS on the DARTS search space
 We highly recommend using multiple GPUs to run BANANAS on the DARTS search space. You can run BANANAS in parallel on GCP using the shell script 
+
 ```
 run_experiments_parallel.sh
 ```

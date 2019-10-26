@@ -12,3 +12,4 @@
 *saved_*
 *pylintrc*
 nasbench_only108.tfrecord
+.ipynb_checkpoints/*
