@@ -1,0 +1,14 @@
+*.DS_Store
+*.sw*
+*.pyc
+*.Rapp.history
+*.*~
+*.out
+*hide
+*hide_*
+*save
+*save_*
+*saved
+*saved_*
+*pylintrc*
+nasbench_only108.tfrecord
