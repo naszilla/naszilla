@@ -19,7 +19,7 @@ BANANAS is a neural architecture search (NAS) algorithm which uses Bayesian opti
 ## Train a meta neural network with a notebook on the NASBench dataset
 - Download the nasbench_only108 tfrecord file (size 499MB) [here](https://storage.googleapis.com/nasbench/nasbench_only108.tfrecord)
 - Place `nasbench_only108.tfrecord` in the top level folder of this repo
-- Open and run `meta_neuralnet.ipynb` to reproduce Table 1 and Figure 4 of our paper
+- Open and run `meta_neuralnet.ipynb` to reproduce Table 1 and Figure A.1 of our paper
 
 <p align="center">
   <img src="img/metann_adj_train.png" alt="bananas_fig" width="24%">
