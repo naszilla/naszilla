@@ -90,10 +90,11 @@ def run(args):
     # if it's the first iteration, choose k arches at random to train
     if query == 0:
         print('about to generate {} random'.format(k))
-        initial_arches = search_space.generate_random_dataset(num=k, train=False)
+        data = search_space.generate_random_dataset(num=k, train=False)
+        arches = [d[0] for d in data]
 
         next_arches = []
-        for arch in initial_arches:
+        for arch in arches:
             d = {}
             d['spec'] = arch
             next_arches.append(d)
