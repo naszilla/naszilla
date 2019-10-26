@@ -32,7 +32,7 @@ BANANAS is a neural architecture search (NAS) algorithm which uses Bayesian opti
 The best architecture found by BANANAS on the DARTS search space achieved 2.57% test error. To evaluate our pretrained neural architecture,
 - Download our fork of the darts repo here: https://github.com/naszilla/darts
 - If the repo is not in your home directory, i.e., `~/darts`, then update line 7 of `bananas/darts/data.py` and line 8 of `bananas/train_arch_runner.py` with the correct path.
-- Download the weights [bananas.pt](https://drive.google.com/file/d/1d8jnI0R9fvXBjkIY7CRogyxynEh6TWu_/view?usp=sharing) and it inside the folder `darts/cnn`
+- Download the weights [bananas.pt](https://drive.google.com/file/d/1d8jnI0R9fvXBjkIY7CRogyxynEh6TWu_/view?usp=sharing) and put it inside the folder `darts/cnn`
 ```
 cd darts/cnn; python test.py --model_path bananas.pt
 ```
