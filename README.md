@@ -1,6 +1,7 @@
 # BANANAS
 Bayesian Optimization with Neural Architectures for Neural Architecture Search
-Arxiv paper to be announced on Oct 26
+
+Arxiv paper to be announced on Oct 27.
 
 ## A new method for neural architecture search
 BANANAS is a neural architecture search (NAS) algorithm which uses Bayesian optimization with a meta neural network to predict the valudation accuracy of neural architectures. We use a path-based encoding scheme to featurize the neural architectures that are used to train the neural network model. After training on just 200 architectures, we are able to predict the valiation accuracy of new architectures to within one percent on average. The full NAS algorithm beats state of the art on the NASBench and the DARTS search spaces. On the NASBench search space, our algorithm is over 100x more efficient than random search, and 3.8x more efficent than the next-best algorithm we tried. On the DARTS search space, BANANAS finds an architecture with a test error of 2.57%.

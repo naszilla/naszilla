@@ -5,7 +5,7 @@ import sys
 import os
 import pickle
 
-sys.path.append(os.path.expanduser('~/bananas/darts-deterministic/cnn'))
+sys.path.append(os.path.expanduser('~/darts/cnn'))
 from train_class import Train
 
 """
