@@ -1,0 +1,241 @@
+import itertools
+import os
+import pickle
+import sys
+import copy
+import numpy as np
+import random
+from argparse import Namespace
+from scipy.stats import norm
+
+from bo.bo.probo import ProBO
+from acquisition_functions import acq_fn
+from nas_bench.data import NasbenchData
+from darts.data import DartsData
+from meta_neural_net import MetaNeuralnet
+from nas_bench.cell import Cell
+
+def run_nas_algorithm(algo_params, metann_params):
+
+    ps = copy.deepcopy(algo_params)
+    algo_name = ps.pop('algo_name')
+
+    mp = copy.deepcopy(metann_params)
+    search_space = mp.pop('search_space')
+
+    # todo: make a Data parent class
+    if search_space == 'nasbench':
+        search_space = NasbenchData()
+    elif search_space == 'darts':
+        search_space = DartsData()
+
+    if algo_name == 'random':
+        data = random_search(search_space, **ps)
+    elif algo_name == 'evolution':
+        data = evolution_search(search_space, **ps)
+    elif algo_name == 'bananas':
+        data = bananas(search_space, mp, **ps)
+    elif algo_name == 'gp_bayesopt':
+        data = gp_bayesopt_search(search_space, **ps)
+    else:
+        print('invalid algorithm name')
+        sys.exit()
+
+    k = 10
+    if 'k' in ps:
+        k = ps['k']
+
+    return compute_best_test_losses(data, k, ps['total_queries'])
+
+
+def compute_best_test_losses(data, k, total_queries):
+    results = []
+    for query in range(k, total_queries + k, k):
+        test_losses = [d[-1] for d in data[:query]]
+        best_test_loss = sorted(test_losses)[0]
+        results.append((query, best_test_loss))
+
+    return results
+
+
+def random_search(search_space,
+                    total_queries=100, 
+                    k=10,
+                    allow_isomorphisms=False, 
+                    deterministic=True):
+    """ 
+    random search
+    """
+    data = search_space.generate_random_dataset(num=total_queries, 
+                                                allow_isomorphisms=allow_isomorphisms, 
+                                                deterministic_loss=deterministic)
+    return data
+
+
+def evolution_search(search_space,
+                        num_init=10,
+                        k=10,
+                        population_size=30,
+                        total_queries=100,
+                        tournament_size=10,
+                        mutation_rate=1.0, 
+                        allow_isomorphisms=False,
+                        deterministic=True,
+                        verbose=1):
+    """
+    regularized evolution
+    """
+    data = search_space.generate_random_dataset(num=num_init, 
+                                                allow_isomorphisms=allow_isomorphisms,
+                                                deterministic_loss=deterministic)
+    arches = [d[0] for d in data]
+    val_losses = [d[2] for d in data]
+    query = num_init
+
+    if num_init <= population_size:
+        population = range(num_init)
+    else:
+        population = np.argsort(val_losses)[:population_size]
+
+    while query <= total_queries:
+
+        # evolve the population
+        sample = random.sample(population, tournament_size)
+        best_index = sorted([(i, val_losses[i]) for i in sample], key=lambda i:i[1])[0][0]
+        mutated = search_space.mutate_arch(arches[best_index], mutation_rate)
+        val_loss, test_loss = search_space.query_arch(mutated, deterministic)
+        data.append((mutated, None, val_loss, test_loss))
+
+        # kill the worst from the population
+        if len(population) >= population_size:
+            population = np.argsort(val_losses)[:population_size]
+
+        if verbose and (query % k == 0):
+            top_5_loss = sorted([d[2] for d in data])[:min(5, len(data))]
+            print('Query {}, top 5 val losses {}'.format(query, top_5_loss))
+
+        query += 1
+
+    return data
+
+
+def bananas(search_space, metann_params,
+            num_init=10, 
+            k=10, 
+            total_queries=150, 
+            num_ensemble=5, 
+            acq_opt_type='mutation',
+            explore_type='ucb',
+            encode_paths=True,
+            allow_isomorphisms=False,
+            deterministic=True,
+            verbose=1):
+    """
+    Bayesian optimization with a neural network model
+    """
+
+    data = search_space.generate_random_dataset(num=num_init, 
+                                                encode_paths=encode_paths, 
+                                                allow_isomorphisms=allow_isomorphisms,
+                                                deterministic_loss=deterministic)
+    specs = [d[0] for d in data]
+    xtrain = np.array([d[1] for d in data])
+    ytrain = np.array([d[2] for d in data])
+    query = num_init + k
+
+    while query <= total_queries:
+
+        candidates = search_space.get_candidates(data, 
+                                                acq_opt_type=acq_opt_type,
+                                                encode_paths=encode_paths, 
+                                                allow_isomorphisms=allow_isomorphisms,
+                                                deterministic_loss=deterministic)
+
+        xcandidates = np.array([c[1] for c in candidates])
+        predictions = []
+
+        # train an ensemble of neural networks
+        train_error = 0
+        for _ in range(num_ensemble):
+            meta_neuralnet = MetaNeuralnet()
+            train_error += meta_neuralnet.fit(xtrain, ytrain, **metann_params)
+            predictions.append(np.squeeze(meta_neuralnet.predict(xcandidates)))
+        train_error /= num_ensemble
+        if verbose:
+            print('Query {}, Meta neural net train error: {}'.format(query, train_error))
+
+        sorted_indices = acq_fn(predictions, explore_type)
+
+        # update data
+        for i in sorted_indices[:k]:
+            val_loss, test_loss = search_space.query_arch(candidates[i][0])
+            data.append((*candidates[i], val_loss, test_loss))
+
+        if verbose:
+            top_5_loss = sorted([d[2] for d in data])[:min(5, len(data))]
+            print('Query {}, top 5 val losses {}'.format(query, top_5_loss))
+
+        query += k
+
+    return data
+
+def gp_bayesopt_search(search_space,
+                        num_init=10,
+                        k=10,
+                        total_queries=100,
+                        distance='edit_distance',
+                        deterministic=True,
+                        tmpdir='./',
+                        max_iter=200,
+                        mode='single_process',
+                        nppred=1000):
+    """
+    Bayesian optimization with a GP prior
+    """
+    num_iterations = total_queries - num_init
+
+    # black-box function that bayesopt will optimize
+    def fn(arch):
+        return search_space.query_arch(arch, deterministic)[0]
+
+    aux_file_path = os.path.join(tmpdir, 'aux.pkl')
+
+    # set all the parameters for the various bayesopt classes
+    fhp = Namespace(fhstr='object', namestr='train')
+    domp = Namespace(dom_str='list', set_domain_list_auto=True,
+                     aux_file_path=aux_file_path,
+                     distance=distance)
+    modelp = Namespace(kernp=Namespace(ls=3., alpha=1.5, sigma=1e-5),
+                       infp=Namespace(niter=num_iterations, nwarmup=500),
+                       distance=distance, search_space=search_space.get_type())
+    amp = Namespace(am_str='mygpdistmat_ucb', nppred=nppred, modelp=modelp)
+    optp = Namespace(opt_str='rand', max_iter=max_iter)
+    makerp = Namespace(domp=domp, amp=amp, optp=optp)
+    probop = Namespace(niter=num_iterations, fhp=fhp,
+                       makerp=makerp, tmpdir=tmpdir, mode=mode)
+    data = Namespace()
+
+    # Set up initial data
+    init_data = search_space.generate_random_dataset(num=num_init, 
+                                                    deterministic_loss=deterministic)
+    data.X = [d[0] for d in init_data]
+    data.y = np.array([[d[2]] for d in init_data])
+
+    # initialize aux file
+    pairs = [(data.X[i], data.y[i]) for i in range(len(data.y))]
+    pairs.sort(key=lambda x: x[1])
+    with open(aux_file_path, 'wb') as f:
+        pickle.dump(pairs, f)
+
+    # run Bayesian Optimization
+    bo = ProBO(fn, search_space, aux_file_path, data, probop, True)
+    bo.run_bo()
+
+    results = []
+    for arch in data.X:
+        val_loss, test_loss = search_space.query_arch(arch)
+        results.append((arch, val_loss, test_loss))
+
+    return results
+
+
