@@ -172,7 +172,7 @@ class Cell:
 
     def get_path_indices(self):
         """
-        convert paths from arrays to ints
+        compute the index of each path
         There are 3^0 + ... + 3^5 paths total.
         (Paths can be length 0 to 5, and for each path, for each node, there
         are three choices for the operation.)

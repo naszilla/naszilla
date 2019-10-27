@@ -57,15 +57,10 @@ class MyGpDistmatPP(DiscPP):
 
   def get_distmat(self, xmat1, xmat2):
     """ Get distance matrix """
-    # For now, will compute squared euc distance * .5, on self.data.X
     #return squared_euc_distmat(xmat1, xmat2, .5)
     
-    if self.modelp.search_space == 'nasbench':
-      from nas_bench.data import NasbenchData
-      self.distmat = NasbenchData.generate_distance_matrix
-    elif self.modelp.search_space == 'darts':
-      from darts.data import DartsData
-      self.distmat = DartsData.generate_distance_matrix
+    from data import Data
+    self.distmat = Data.generate_distance_matrix
     return self.distmat(xmat1, xmat2, self.modelp.distance)
 
   def print_inference_result(self):

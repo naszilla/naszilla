@@ -9,7 +9,8 @@ sys.path.append(os.path.expanduser('~/darts/cnn'))
 from train_class import Train
 
 """
-train arch runner
+train arch runner is used in run_experiments_parallel
+
  - loads data by opening a pickle file containing an architecture spec
  - trains that architecture for e epochs
  - outputs a new pickle file with the architecture spec and its validation loss

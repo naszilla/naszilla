@@ -41,9 +41,6 @@ def algo_params(param_str):
         params.append({'algo_name':'gp_bayesopt', 'total_queries':150, 'deterministic':False})
         params.append({'algo_name':'bananas', 'total_queries':150, 'deterministic':False})
 
-    elif param_str == 'darts':
-        params.append({'search_space':'darts', 'algo_name':'bananas', 'total_queries':100})
-
     elif param_str == 'test':
         params.append({'algo_name':'bananas', 'total_queries':30})   
         params.append({'algo_name':'random', 'total_queries':30})

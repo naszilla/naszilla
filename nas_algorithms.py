@@ -6,26 +6,18 @@ import copy
 import numpy as np
 import random
 from argparse import Namespace
-from scipy.stats import norm
 
-from bo.bo.probo import ProBO
+from data import Data
 from acquisition_functions import acq_fn
-from nas_bench.data import NasbenchData
-from darts.data import DartsData
 from meta_neural_net import MetaNeuralnet
-from nas_bench.cell import Cell
+from bo.bo.probo import ProBO
 
 def run_nas_algorithm(algo_params, metann_params):
 
     # set up search space
     mp = copy.deepcopy(metann_params)
-    search_space = mp.pop('search_space')
-
-    if search_space == 'nasbench':
-        search_space = NasbenchData()
-    elif search_space == 'darts':
-        search_space = DartsData()
-
+    ss = mp.pop('search_space')
+    search_space = Data(ss)
 
     # run nas algorithm
     ps = copy.deepcopy(algo_params)
@@ -111,8 +103,8 @@ def evolution_search(search_space,
         sample = random.sample(population, tournament_size)
         best_index = sorted([(i, val_losses[i]) for i in sample], key=lambda i:i[1])[0][0]
         mutated = search_space.mutate_arch(arches[best_index], mutation_rate)
-        val_loss, test_loss = search_space.query_arch(mutated, deterministic)
-        data.append((mutated, None, val_loss, test_loss))
+        archtuple = search_space.query_arch(mutated, deterministic=deterministic)
+        data.append(archtuple)
 
         # kill the worst from the population
         if len(population) >= population_size:
@@ -158,7 +150,6 @@ def bananas(search_space, metann_params,
                                                 encode_paths=encode_paths, 
                                                 allow_isomorphisms=allow_isomorphisms,
                                                 deterministic_loss=deterministic)
-
         xcandidates = np.array([c[1] for c in candidates])
         predictions = []
 
@@ -180,8 +171,10 @@ def bananas(search_space, metann_params,
 
         # add the k arches with the minimum acquisition function values
         for i in sorted_indices[:k]:
-            val_loss, test_loss = search_space.query_arch(candidates[i][0])
-            data.append((*candidates[i], val_loss, test_loss))
+            archtuple = search_space.query_arch(candidates[i][0],
+                                                encode_paths=encode_paths,
+                                                deterministic=deterministic)
+            data.append(archtuple)
 
         if verbose:
             top_5_loss = sorted([d[2] for d in data])[:min(5, len(data))]
@@ -208,7 +201,7 @@ def gp_bayesopt_search(search_space,
 
     # black-box function that bayesopt will optimize
     def fn(arch):
-        return search_space.query_arch(arch, deterministic)[0]
+        return search_space.query_arch(arch, deterministic=deterministic)[2]
 
     # set up the path for auxiliary pickle files
     aux_file_path = os.path.join(tmpdir, 'aux.pkl')
@@ -247,8 +240,8 @@ def gp_bayesopt_search(search_space,
     # get the validation and test loss for all architectures chosen by BayesOpt
     results = []
     for arch in data.X:
-        val_loss, test_loss = search_space.query_arch(arch)
-        results.append((arch, val_loss, test_loss))
+        archtuple = search_space.query_arch(arch)
+        results.append(archtuple)
 
     return results
 

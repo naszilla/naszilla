@@ -7,12 +7,13 @@ import pickle
 import numpy as np
 
 from acquisition_functions import acq_fn
-from darts.data import DartsData
+from data import Data
 from meta_neural_net import MetaNeuralnet
 
 
 """
-meta neural net runner
+meta neural net runner is used in run_experiments_parallel
+
  - loads data by opening k*i pickle files from previous iterations
  - trains a meta neural network and predicts accuracy of all candidates
  - outputs k pickle files of the architecture to be trained next
@@ -25,7 +26,7 @@ def run_meta_neuralnet(search_space, dicts,
                         epochs=10000,
                         lr=0.00001,
                         loss='scaled',
-                        explore_type='ips',
+                        explore_type='its',
                         explore_factor=0.5):
 
     # data: list of arch dictionary objects
@@ -85,7 +86,7 @@ def run(args):
     untrained_prefix = args.untrained_filename
     threshold = args.threshold
 
-    search_space = DartsData()
+    search_space = Data('darts')
 
     # if it's the first iteration, choose k arches at random to train
     if query == 0:
