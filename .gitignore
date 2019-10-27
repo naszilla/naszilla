@@ -13,3 +13,10 @@
 *pylintrc*
 nasbench_only108.tfrecord
 .ipynb_checkpoints/*
+
+*aux.pkl
+*config.pkl
+*nextpt.pkl
+*data.pkl
+*log.txt
+

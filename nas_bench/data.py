@@ -1,4 +1,3 @@
-import itertools
 import numpy as np
 import pickle
 from nasbench import api
@@ -33,6 +32,8 @@ class NasbenchData:
         """
         Creates a set of candidate architectures with mutated and/or random architectures
         """
+        
+        # test for isomorphisms using a hash map of path indices
         candidates = []
         dic = {}
         for d in data:
@@ -40,25 +41,30 @@ class NasbenchData:
             path_indices = Cell(**arch).get_path_indices()
             dic[path_indices] = 1            
 
-        if acq_opt_type in ['mutation']:
+        if acq_opt_type in ['mutation', 'mutation_random']:
+            # mutate architectures with the lowest validation error
             k = int(num * patience_factor / 100)
             best_arches = [arch[0] for arch in sorted(data, key=lambda i:i[2])[:k]]
+
+            # stop when candidates is size num
+            # use patience_factor instead of a while loop to avoid long or infinite runtime
             for arch in best_arches:
                 if len(candidates) >= num:
                     break
-                for i in range(100):
+                for i in range(num):
                     mutated = Cell(**arch).mutate(self.nasbench, 1.0)
                     path_indices = Cell(**mutated).get_path_indices()
                     if allow_isomorphisms or path_indices not in dic:
-                        dic[path_indices] = 1
-                 
+                        dic[path_indices] = 1    
+
                         if encode_paths:
                             encoding = Cell(**mutated).encode_paths()
                         else:
                             encoding = Cell(**mutated).encode_cell()
                         candidates.append((mutated, encoding))
 
-        if acq_opt_type in ['random']:
+        if acq_opt_type in ['random', 'mutation_random']:
+            # add randomly sampled architectures to the set of candidates
             for _ in range(num * patience_factor):
                 if len(candidates) >= 2 * num:
                     break
@@ -84,7 +90,7 @@ class NasbenchData:
                                 deterministic_loss=True):
         """
         create a random dataset
-        remove isomorphic architectures
+        test for isomorphisms using a hash map of path indices
         tries_left ensures there is no infinite loop caused by removing isomorphisms
         """
 
@@ -109,7 +115,7 @@ class NasbenchData:
 
         return data
 
-    # Bayesopt method
+    # Method used for gp_bayesopt
     def get_arch_list(self,
                         aux_file_path, 
                         distance=None, 
@@ -142,8 +148,8 @@ class NasbenchData:
                         dic[path_indices] = 1
                         new_arch_list.append(perturbation)
 
+        # make sure new_arch_list is not empty
         while len(new_arch_list) == 0:
-            print('new arch list was empty')
             for _ in range(100):
                 arch = Cell.random_cell(self.nasbench)
                 path_indices = Cell(**arch).get_path_indices()
@@ -153,7 +159,7 @@ class NasbenchData:
 
         return new_arch_list
 
-    # Bayesopt method
+    # Method used for gp_bayesopt
     @classmethod
     def generate_distance_matrix(cls, arches_1, arches_2, distance):
         matrix = np.zeros([len(arches_1), len(arches_2)])

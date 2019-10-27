@@ -24,17 +24,17 @@ def run_experiments(args, save_dir):
         walltimes = []
 
         for j in range(num_algos):
-            # Run NAS algorithm
+            # run NAS algorithm
             print('\n* Running algorithm: {}'.format(algorithm_params[j]))
             starttime = time.time()
             algo_result = run_nas_algorithm(algorithm_params[j], metann_params)
             algo_result = np.round(algo_result, 5)
 
-            # Add walltime and results
+            # add walltime and results
             walltimes.append(time.time()-starttime)
             results.append(algo_result)
 
-        # Print and pickle results
+        # print and pickle results
         filename = os.path.join(save_dir, '{}_{}.pkl'.format(out_file, i))
         print('\n* Trial summary: (params, results, walltimes)')
         print(algorithm_params)

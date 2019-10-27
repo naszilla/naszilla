@@ -26,6 +26,9 @@ class DartsData:
                                 encode_paths=True,
                                 allow_isomorphisms=False,
                                 determinstic_loss=True):
+        """
+        create a random dataset
+        """
         arches = []
         for _ in range(num):
             arch = Arch.sample_arch()
@@ -46,7 +49,9 @@ class DartsData:
                         num_copies=5,
                         num=100,
                         deterministic_loss=None):
-        
+        """
+        Creates a set of candidate architectures with mutated and/or random architectures
+        """
         mutation_candidates = []
         random_candidates = []
         best_arches = sorted(data, key=lambda i: i[2])
@@ -71,8 +76,8 @@ class DartsData:
         return candidates
 
     def remove_duplicates(self, candidates, data):
-        # input: candidate specs, data specs
-        # output: candidates with no duplicates with itself or data
+        # input: two sets of architectues: candidates and data
+        # output: candidates with arches from data removed
 
         dic = {}
         for spec in data:

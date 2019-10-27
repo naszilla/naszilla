@@ -17,17 +17,19 @@ from nas_bench.cell import Cell
 
 def run_nas_algorithm(algo_params, metann_params):
 
-    ps = copy.deepcopy(algo_params)
-    algo_name = ps.pop('algo_name')
-
+    # set up search space
     mp = copy.deepcopy(metann_params)
     search_space = mp.pop('search_space')
 
-    # todo: make a Data parent class
     if search_space == 'nasbench':
         search_space = NasbenchData()
     elif search_space == 'darts':
         search_space = DartsData()
+
+
+    # run nas algorithm
+    ps = copy.deepcopy(algo_params)
+    algo_name = ps.pop('algo_name')
 
     if algo_name == 'random':
         data = random_search(search_space, **ps)
@@ -49,6 +51,11 @@ def run_nas_algorithm(algo_params, metann_params):
 
 
 def compute_best_test_losses(data, k, total_queries):
+    """
+    Given full data from a completed nas algorithm,
+    output the test error of the best architecture 
+    after every multiple of k
+    """
     results = []
     for query in range(k, total_queries + k, k):
         test_losses = [d[-1] for d in data[:query]]
@@ -99,7 +106,8 @@ def evolution_search(search_space,
 
     while query <= total_queries:
 
-        # evolve the population
+        # evolve the population by mutating the best architecture
+        # from a random subset of the population
         sample = random.sample(population, tournament_size)
         best_index = sorted([(i, val_losses[i]) for i in sample], key=lambda i:i[1])[0][0]
         mutated = search_space.mutate_arch(arches[best_index], mutation_rate)
@@ -125,7 +133,7 @@ def bananas(search_space, metann_params,
             total_queries=150, 
             num_ensemble=5, 
             acq_opt_type='mutation',
-            explore_type='ucb',
+            explore_type='its',
             encode_paths=True,
             allow_isomorphisms=False,
             deterministic=True,
@@ -159,14 +167,18 @@ def bananas(search_space, metann_params,
         for _ in range(num_ensemble):
             meta_neuralnet = MetaNeuralnet()
             train_error += meta_neuralnet.fit(xtrain, ytrain, **metann_params)
+
+            # predict the validation loss of the candidate architectures
             predictions.append(np.squeeze(meta_neuralnet.predict(xcandidates)))
+
         train_error /= num_ensemble
         if verbose:
             print('Query {}, Meta neural net train error: {}'.format(query, train_error))
 
+        # compute the acquisition function for all the candidate architectures
         sorted_indices = acq_fn(predictions, explore_type)
 
-        # update data
+        # add the k arches with the minimum acquisition function values
         for i in sorted_indices[:k]:
             val_loss, test_loss = search_space.query_arch(candidates[i][0])
             data.append((*candidates[i], val_loss, test_loss))
@@ -198,9 +210,10 @@ def gp_bayesopt_search(search_space,
     def fn(arch):
         return search_space.query_arch(arch, deterministic)[0]
 
+    # set up the path for auxiliary pickle files
     aux_file_path = os.path.join(tmpdir, 'aux.pkl')
 
-    # set all the parameters for the various bayesopt classes
+    # set all the parameters for the various BayesOpt classes
     fhp = Namespace(fhstr='object', namestr='train')
     domp = Namespace(dom_str='list', set_domain_list_auto=True,
                      aux_file_path=aux_file_path,
@@ -231,6 +244,7 @@ def gp_bayesopt_search(search_space,
     bo = ProBO(fn, search_space, aux_file_path, data, probop, True)
     bo.run_bo()
 
+    # get the validation and test loss for all architectures chosen by BayesOpt
     results = []
     for arch in data.X:
         val_loss, test_loss = search_space.query_arch(arch)

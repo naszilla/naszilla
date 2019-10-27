@@ -2,7 +2,7 @@ import numpy as np
 import sys
 
 # Different acquisition functions that can be used by BANANAS
-def acq_fn(predictions, explore_type='ucb'):
+def acq_fn(predictions, explore_type='its'):
     predictions = np.array(predictions)
 
     # Upper confidence bound (UCB) acquisition function
@@ -45,8 +45,8 @@ def acq_fn(predictions, explore_type='ucb'):
         min_prediction = np.min(predictions, axis=0)
         sorted_indices = np.argsort(min_prediction)
 
-    # Independent predictive sampling (IPS) acquisition function
-    elif explore_type == 'ips':
+    # Independent Thompson sampling (ITS) acquisition function
+    elif explore_type == 'its':
         mean = np.mean(predictions, axis=0)
         std = np.sqrt(np.var(predictions, axis=0))
         samples = np.random.normal(mean, std)
