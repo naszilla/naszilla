@@ -4,15 +4,15 @@ Bayesian Optimization with Neural Architectures for Neural Architecture Search
 Arxiv paper to be announced on Oct 27.
 
 ## A new method for neural architecture search
-BANANAS is a neural architecture search (NAS) algorithm which uses Bayesian optimization with a meta neural network to predict the valudation accuracy of neural architectures. We use a path-based encoding scheme to featurize the neural architectures that are used to train the neural network model. After training on just 200 architectures, we are able to predict the valiation accuracy of new architectures to within one percent on average. The full NAS algorithm beats state of the art on the NASBench and the DARTS search spaces. On the NASBench search space, our algorithm is over 100x more efficient than random search, and 3.8x more efficent than the next-best algorithm we tried. On the DARTS search space, BANANAS finds an architecture with a test error of 2.57%.
+BANANAS is a neural architecture search (NAS) algorithm which uses Bayesian optimization with a meta neural network to predict the valudation accuracy of neural architectures. We use a path-based encoding scheme to featurize the neural architectures that are used to train the neural network model. After training on just 200 architectures, we are able to predict the valiation accuracy of new architectures to within one percent on average. The full NAS algorithm beats state of the art on the NASBench and the DARTS search spaces. On the NASBench search space, BANANAS is over 100x more efficient than random search, and 3.8x more efficent than the next-best algorithm we tried. On the DARTS search space, BANANAS finds an architecture with a test error of 2.57%.
 
 <p align="center">
 <img src="img/bananas_fig.png" alt="bananas_fig" width="70%">
 </p>
 
 ## Requirements
-- tensorflow == 1.14.0 (required for both NASBench and DARTS search space experiments)
-- pytorch == 1.2.0 (only required for DARTS search space experiments)
+- tensorflow == 1.14.0 (required for both NASBench and DARTS experiments)
+- pytorch == 1.2.0, torchvision == 0.4.0 (only required for DARTS experiments)
 - matplotlib, jupyter
 - nasbench (follow the installation instructions [here](https://github.com/google-research/nasbench))
 
@@ -53,7 +53,7 @@ Train the best architecture found by BANANAS.
 ```
 python train.py --auxiliary --cutout
 ```
-This will train the architecture from scratch, which takes about 32 hours on a NVIDIA V100 GPU. 
+This will train the architecture from scratch, which takes about 34 hours on an NVIDIA V100 GPU. 
 The final test error should be 2.57%.
 
 ## Run BANANAS on the NASBench search space
