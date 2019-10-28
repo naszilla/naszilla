@@ -1,7 +1,8 @@
 # BANANAS
-Bayesian Optimization with Neural Architectures for Neural Architecture Search
 
-Arxiv paper to be announced on Oct 27.
+[BANANAS: Bayesian Optimization with Neural Architectures for Neural Architecture Search](https://arxiv.org/abs/1910.11858)\
+Colin White, Willie Neiswanger, and Yash Savani.\
+_arXiv:1910.11858_.
 
 ## A new method for neural architecture search
 BANANAS is a neural architecture search (NAS) algorithm which uses Bayesian optimization with a meta neural network to predict the valudation accuracy of neural architectures. We use a path-based encoding scheme to featurize the neural architectures that are used to train the neural network model. After training on just 200 architectures, we are able to predict the valiation accuracy of new architectures to within one percent on average. The full NAS algorithm beats state of the art on the NASBench and the DARTS search spaces. On the NASBench search space, BANANAS is over 100x more efficient than random search, and 3.8x more efficent than the next-best algorithm we tried. On the DARTS search space, BANANAS finds an architecture with a test error of 2.57%.
@@ -75,4 +76,14 @@ We highly recommend using multiple GPUs to run BANANAS on the DARTS search space
 
 ```
 run_experiments_parallel.sh
+```
+## Citation
+Please cite [our paper](https://arxiv.org/abs/1910.11858) if you use code from this repo:
+```
+@article{white2019bananas,
+  title={BANANAS: Bayesian Optimization with Neural Architectures for Neural Architecture Search},
+  author={White, Colin and Neiswanger, Willie and Savani, Yash},
+  journal={arXiv preprint arXiv:1910.11858},
+  year={2019}
+}
 ```
