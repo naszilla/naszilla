@@ -155,11 +155,11 @@ class Data:
 
         dic = {}
         for d in data:
-            dic[get_path_indices(d[0])] = 1
+            dic[self.get_path_indices(d[0])] = 1
         unduplicated = []
         for candidate in candidates:
-            if get_path_indices(candidate[0]) not in dic:
-                dic[get_path_indices(candidate[0])] = 1
+            if self.get_path_indices(candidate[0]) not in dic:
+                dic[self.get_path_indices(candidate[0])] = 1
                 unduplicated.append(candidate)
         return unduplicated
 
