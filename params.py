@@ -62,7 +62,7 @@ def meta_neuralnet_params(param_str):
             'epochs':150, 'batch_size':32, 'lr':.01, 'regularization':0, 'verbose':0}
 
     elif param_str == 'darts':
-        params = {'search_space':'darts', 'loss':'scaled', 'num_layers':10, 'layer_width':20, \
+        params = {'search_space':'darts', 'loss':'mape', 'num_layers':10, 'layer_width':20, \
             'epochs':10000, 'batch_size':32, 'lr':.00001, 'regularization':0, 'verbose':0}
 
     else:

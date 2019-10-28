@@ -19,8 +19,8 @@ def mle_loss(y_true, y_pred):
     return 0.5 * tf.log(2*np.pi*var) + tf.square(y_true - mean) / (2*var)
 
 
-def scaled_loss(y_true, y_pred):
-    # Loss function weighted towards better architectures
+def mape_loss(y_true, y_pred):
+    # Minimum absolute percentage error loss function
     lower_bound = 4.5
     fraction = tf.math.divide(tf.subtract(y_pred, lower_bound), \
         tf.subtract(y_true, lower_bound))
@@ -28,15 +28,6 @@ def scaled_loss(y_true, y_pred):
 
 
 class MetaNeuralnet:
-
-    def __init__(self, 
-                    num_layers=10, 
-                    layer_width=20, 
-                    loss='mae'):
-        """ loss can be 'mae', 'mle', or 'scaled_loss' """
-        self.num_layers = num_layers
-        self.layer_width = layer_width
-        self.loss = loss
 
     def get_dense_model(self, 
                         input_dims, 
@@ -75,14 +66,22 @@ class MetaNeuralnet:
             lr=.01, 
             verbose=0, 
             regularization=0):
+
+        if loss == 'mle':
+            loss_fn = mle_loss
+        elif loss == 'mape':
+            loss_fn = mape_loss
+        else:
+            loss_fn = 'mae'
+
         self.model = self.get_dense_model((xtrain.shape[1],), 
-                                            loss=loss,
+                                            loss=loss_fn,
                                             num_layers=num_layers,
                                             layer_width=layer_width,
                                             regularization=regularization)
         optimizer = keras.optimizers.Adam(lr=lr, beta_1=.9, beta_2=.99)
 
-        self.model.compile(optimizer=optimizer, loss=self.loss)
+        self.model.compile(optimizer=optimizer, loss=loss_fn)
         self.model.fit(xtrain, ytrain, 
                         batch_size=batch_size, 
                         epochs=epochs, 

@@ -61,13 +61,18 @@ def random_search(search_space,
                     total_queries=100, 
                     k=10,
                     allow_isomorphisms=False, 
-                    deterministic=True):
+                    deterministic=True,
+                    verbose=1):
     """ 
     random search
     """
     data = search_space.generate_random_dataset(num=total_queries, 
                                                 allow_isomorphisms=allow_isomorphisms, 
                                                 deterministic_loss=deterministic)
+    
+    if verbose:
+        top_5_loss = sorted([d[2] for d in data])[:min(5, len(data))]
+        print('Query {}, top 5 val losses {}'.format(total_queries, top_5_loss))    
     return data
 
 

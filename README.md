@@ -5,7 +5,7 @@ Colin White, Willie Neiswanger, and Yash Savani.\
 _arXiv:1910.11858_.
 
 ## A new method for neural architecture search
-BANANAS is a neural architecture search (NAS) algorithm which uses Bayesian optimization with a meta neural network to predict the valudation accuracy of neural architectures. We use a path-based encoding scheme to featurize the neural architectures that are used to train the neural network model. After training on just 200 architectures, we are able to predict the valiation accuracy of new architectures to within one percent on average. The full NAS algorithm beats state of the art on the NASBench and the DARTS search spaces. On the NASBench search space, BANANAS is over 100x more efficient than random search, and 3.8x more efficent than the next-best algorithm we tried. On the DARTS search space, BANANAS finds an architecture with a test error of 2.57%.
+BANANAS is a neural architecture search (NAS) algorithm which uses Bayesian optimization with a meta neural network to predict the valudation accuracy of neural architectures. We use a path-based encoding scheme to featurize the neural architectures that are used to train the neural network model. After training on just 200 architectures, we are able to predict the valiation accuracy of new architectures to within one percent on average. The full NAS algorithm beats the state of the art on the NASBench and the DARTS search spaces. On the NASBench search space, BANANAS is over 100x more efficient than random search, and 3.8x more efficent than the next-best algorithm we tried. On the DARTS search space, BANANAS finds an architecture with a test error of 2.57%.
 
 <p align="center">
 <img src="img/bananas_fig.png" alt="bananas_fig" width="70%">
@@ -32,7 +32,7 @@ BANANAS is a neural architecture search (NAS) algorithm which uses Bayesian opti
 ## Evaluate pretrained BANANAS architecture
 The best architecture found by BANANAS on the DARTS search space achieved 2.57% test error. To evaluate our pretrained neural architecture,
 - Download our fork of the darts repo: https://github.com/naszilla/darts
-- If the repo is not in your home directory, i.e., `~/darts`, then update line 7 of `bananas/darts/data.py` and line 8 of `bananas/train_arch_runner.py` with the correct path to this repo
+- If the repo is not in your home directory, i.e., `~/darts`, then update line 5 of `bananas/darts/arch.py` and line 8 of `bananas/train_arch_runner.py` with the correct path to this repo
 - Download the weights [bananas.pt](https://drive.google.com/file/d/1d8jnI0R9fvXBjkIY7CRogyxynEh6TWu_/view?usp=sharing) and put it inside the folder `<path-to-darts>/cnn`
 
 ```
@@ -55,7 +55,9 @@ Train the best architecture found by BANANAS.
 python train.py --auxiliary --cutout
 ```
 This will train the architecture from scratch, which takes about 34 hours on an NVIDIA V100 GPU. 
-The final test error should be 2.57%.
+The final test error should be 2.59%.
+Setting the random seed to 4 by adding `--seed 4` will result in a test error of 2.57%.
+We report the random seeds and hardware used in Table 2 of our paper [here](https://docs.google.com/spreadsheets/d/1z6bHUgX8r0y9Bh9Zxot_B9nT_9qLWJoD0Um0fTYdpus/edit?usp=sharing).
 
 ## Run BANANAS on the NASBench search space
 To run BANANAS on NASBench,
