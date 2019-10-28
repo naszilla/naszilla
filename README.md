@@ -5,17 +5,23 @@ Colin White, Willie Neiswanger, and Yash Savani.\
 _arXiv:1910.11858_.
 
 ## A new method for neural architecture search
-BANANAS is a neural architecture search (NAS) algorithm which uses Bayesian optimization with a meta neural network to predict the valudation accuracy of neural architectures. We use a path-based encoding scheme to featurize the neural architectures that are used to train the neural network model. After training on just 200 architectures, we are able to predict the valiation accuracy of new architectures to within one percent on average. The full NAS algorithm beats the state of the art on the NASBench and the DARTS search spaces. On the NASBench search space, BANANAS is over 100x more efficient than random search, and 3.8x more efficent than the next-best algorithm we tried. On the DARTS search space, BANANAS finds an architecture with a test error of 2.57%.
+BANANAS is a neural architecture search (NAS) algorithm which uses Bayesian optimization with a meta neural network to predict the validation accuracy of neural architectures. We use a path-based encoding scheme to featurize the neural architectures that are used to train the neural network model. After training on just 200 architectures, we are able to predict the validation accuracy of new architectures to within one percent on average. The full NAS algorithm beats the state of the art on the NASBench and the DARTS search spaces. On the NASBench search space, BANANAS is over 100x more efficient than random search, and 3.8x more efficent than the next-best algorithm we tried. On the DARTS search space, BANANAS finds an architecture with a test error of 2.57%.
 
 <p align="center">
 <img src="img/bananas_fig.png" alt="bananas_fig" width="70%">
 </p>
 
 ## Requirements
-- tensorflow == 1.14.0 (required for both NASBench and DARTS experiments)
-- pytorch == 1.2.0, torchvision == 0.4.0 (only required for DARTS experiments)
+- tensorflow == 1.14.0
+- pytorch == 1.2.0, torchvision == 0.4.0
 - matplotlib, jupyter
 - nasbench (follow the installation instructions [here](https://github.com/google-research/nasbench))
+
+You will also need our fork of the darts repo:
+- Download the repo: https://github.com/naszilla/darts
+- If the repo is not in your home directory, i.e., `~/darts`, then update line 5 of `bananas/darts/arch.py` and line 8 of `bananas/train_arch_runner.py` with the correct path to this repo
+
+
 
 ## Train a meta neural network with a notebook on the NASBench dataset
 - Download the nasbench_only108 tfrecord file (size 499MB) [here](https://storage.googleapis.com/nasbench/nasbench_only108.tfrecord)
@@ -30,10 +36,7 @@ BANANAS is a neural architecture search (NAS) algorithm which uses Bayesian opti
 </p>
 
 ## Evaluate pretrained BANANAS architecture
-The best architecture found by BANANAS on the DARTS search space achieved 2.57% test error. To evaluate our pretrained neural architecture,
-- Download our fork of the darts repo: https://github.com/naszilla/darts
-- If the repo is not in your home directory, i.e., `~/darts`, then update line 5 of `bananas/darts/arch.py` and line 8 of `bananas/train_arch_runner.py` with the correct path to this repo
-- Download the weights [bananas.pt](https://drive.google.com/file/d/1d8jnI0R9fvXBjkIY7CRogyxynEh6TWu_/view?usp=sharing) and put it inside the folder `<path-to-darts>/cnn`
+The best architecture found by BANANAS on the DARTS search space achieved 2.57% test error. To evaluate our pretrained neural architecture, download the weights [bananas.pt](https://drive.google.com/file/d/1d8jnI0R9fvXBjkIY7CRogyxynEh6TWu_/view?usp=sharing) and put it inside the folder `<path-to-darts>/cnn`
 
 ```
 cd <path-to-darts>/cnn; python test.py --model_path bananas.pt
@@ -52,7 +55,7 @@ The best neural architecture found by BANANAS on CIFAR-10. Convolutional cell (l
 Train the best architecture found by BANANAS.
 
 ```
-python train.py --auxiliary --cutout
+cd <path-to-darts>/cnn; python train.py --auxiliary --cutout
 ```
 This will train the architecture from scratch, which takes about 34 hours on an NVIDIA V100 GPU. 
 The final test error should be 2.59%.
@@ -60,8 +63,7 @@ Setting the random seed to 4 by adding `--seed 4` will result in a test error of
 We report the random seeds and hardware used in Table 2 of our paper [here](https://docs.google.com/spreadsheets/d/1z6bHUgX8r0y9Bh9Zxot_B9nT_9qLWJoD0Um0fTYdpus/edit?usp=sharing).
 
 ## Run BANANAS on the NASBench search space
-To run BANANAS on NASBench,
-- Download `nasbench_only108.tfrecord` and place it in the top level folder of this repo
+To run BANANAS on NASBench, download `nasbench_only108.tfrecord` and place it in the top level folder of this repo.
 
 ```
 python run_experiments_sequential.py
@@ -74,7 +76,7 @@ To customize your experiment, open `params.py`. Here, you can change the hyperpa
 </p>
 
 ## Run BANANAS on the DARTS search space
-We highly recommend using multiple GPUs to run BANANAS on the DARTS search space. You can run BANANAS in parallel on GCP using the shell script 
+We highly recommend using multiple GPUs to run BANANAS on the DARTS search space. You can run BANANAS in parallel on GCP using the shell script:
 
 ```
 run_experiments_parallel.sh
