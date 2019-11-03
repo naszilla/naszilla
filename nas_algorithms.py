@@ -45,14 +45,14 @@ def run_nas_algorithm(algo_params, metann_params):
 def compute_best_test_losses(data, k, total_queries):
     """
     Given full data from a completed nas algorithm,
-    output the test error of the best architecture 
+    output the test error of the arch with the best val error 
     after every multiple of k
     """
     results = []
     for query in range(k, total_queries + k, k):
-        test_losses = [d[-1] for d in data[:query]]
-        best_test_loss = sorted(test_losses)[0]
-        results.append((query, best_test_loss))
+        best_arch = sorted(data, key=lambda i:i[2])[0]
+        test_error = best_arch[3]
+        results.append((query, test_error))
 
     return results
 
