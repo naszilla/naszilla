@@ -2,14 +2,21 @@ import numpy as np
 import sys
 
 # Different acquisition functions that can be used by BANANAS
-def acq_fn(predictions, explore_type='its'):
+def acq_fn(predictions, explore_type='its', stdevs = None):
     predictions = np.array(predictions)
+
+    if not stdevs is None:
+        stdevs = np.array(stdevs)
+        std = np.mean(stdevs, axis=0)
 
     # Upper confidence bound (UCB) acquisition function
     if explore_type == 'ucb':
         explore_factor = 0.5
         mean = np.mean(predictions, axis=0)
-        std = np.sqrt(np.var(predictions, axis=0))
+
+        if stdevs is None:
+            std = np.sqrt(np.var(predictions, axis=0))
+
         ucb = mean - explore_factor * std
         sorted_indices = np.argsort(ucb)
 
@@ -40,7 +47,7 @@ def acq_fn(predictions, explore_type='its'):
         ts = predictions[rand_ind,:]
         sorted_indices = np.argsort(ts)
 
-    # Top exploitation 
+    # Top exploitation
     elif explore_type == 'percentile':
         min_prediction = np.min(predictions, axis=0)
         sorted_indices = np.argsort(min_prediction)
@@ -48,7 +55,10 @@ def acq_fn(predictions, explore_type='its'):
     # Independent Thompson sampling (ITS) acquisition function
     elif explore_type == 'its':
         mean = np.mean(predictions, axis=0)
-        std = np.sqrt(np.var(predictions, axis=0))
+
+        if stdevs is None:
+            std = np.sqrt(np.var(predictions, axis=0))
+
         samples = np.random.normal(mean, std)
         sorted_indices = np.argsort(samples)
 

@@ -3,24 +3,25 @@ import pickle
 
 from nasbench import api
 from nas_bench.cell import Cell
-from darts.arch import Arch
+#from darts.arch import Arch
 
+nasbench_obj = api.NASBench('nasbench_only108.tfrecord')
 
 class Data:
 
     def __init__(self, search_space):
         self.search_space = search_space
         if search_space == 'nasbench':
-            self.nasbench = api.NASBench('nasbench_only108.tfrecord')
+            self.nasbench = nasbench_obj
 
     def get_type(self):
         return self.search_space
 
-    def query_arch(self, 
-                    arch=None, 
-                    train=True, 
-                    encode_paths=True, 
-                    deterministic=True, 
+    def query_arch(self,
+                    arch=None,
+                    train=True,
+                    encode_paths=True,
+                    deterministic=True,
                     epochs=50):
 
         if self.search_space == 'nasbench':
@@ -44,7 +45,7 @@ class Data:
                 encoding = Arch(arch).encode_paths()
             else:
                 encoding = arch
-                        
+
             if train:
                 val_loss, test_loss = Arch(arch).query(epochs=epochs)
                 return (arch, encoding, val_loss, test_loss)
@@ -64,10 +65,10 @@ class Data:
             return Arch(arch).get_path_indices()[0]
 
     def generate_random_dataset(self,
-                                num=10, 
+                                num=10,
                                 train=True,
-                                encode_paths=True, 
-                                allow_isomorphisms=False, 
+                                encode_paths=True,
+                                allow_isomorphisms=False,
                                 deterministic_loss=True,
                                 patience_factor=5):
         """
@@ -93,25 +94,25 @@ class Data:
 
         return data
 
-    def get_candidates(self, data, 
+    def get_candidates(self, data,
                         num=100,
                         acq_opt_type='mutation',
-                        encode_paths=True, 
-                        allow_isomorphisms=False, 
-                        patience_factor=5, 
+                        encode_paths=True,
+                        allow_isomorphisms=False,
+                        patience_factor=5,
                         deterministic_loss=True,
                         num_best_arches=10):
         """
         Creates a set of candidate architectures with mutated and/or random architectures
         """
-        
+
         # test for isomorphisms using a hash map of path indices
         candidates = []
         dic = {}
         for d in data:
             arch = d[0]
             path_indices = self.get_path_indices(arch)
-            dic[path_indices] = 1            
+            dic[path_indices] = 1
 
         if acq_opt_type in ['mutation', 'mutation_random']:
             # mutate architectures with the lowest validation error
@@ -124,13 +125,13 @@ class Data:
                     break
                 for i in range(num):
                     mutated = self.mutate_arch(arch)
-                    archtuple = self.query_arch(mutated, 
+                    archtuple = self.query_arch(mutated,
                                                 train=False,
                                                 encode_paths=encode_paths)
                     path_indices = self.get_path_indices(mutated)
 
                     if allow_isomorphisms or path_indices not in dic:
-                        dic[path_indices] = 1    
+                        dic[path_indices] = 1
                         candidates.append(archtuple)
 
         if acq_opt_type in ['random', 'mutation_random']:
@@ -179,11 +180,11 @@ class Data:
 
     # Method used for gp_bayesopt
     def get_arch_list(self,
-                        aux_file_path, 
-                        distance=None, 
-                        iteridx=0, 
+                        aux_file_path,
+                        distance=None,
+                        iteridx=0,
                         num_top_arches=5,
-                        max_edits=20, 
+                        max_edits=20,
                         num_repeats=5,
                         verbose=1):
 
@@ -198,7 +199,7 @@ class Data:
             top_5_loss = [archtuple[1][0] for archtuple in base_arch_list[:min(5, len(base_arch_list))]]
             print('top 5 val losses {}'.format(top_5_loss))
 
-        # perturb the best k architectures    
+        # perturb the best k architectures
         dic = {}
         for archtuple in base_arch_list:
             path_indices = Cell(**archtuple[0]).get_path_indices()
@@ -234,7 +235,7 @@ class Data:
                 if distance == 'edit_distance':
                     matrix[i][j] = Cell(**arch_1).edit_distance(Cell(**arch_2))
                 elif distance == 'path_distance':
-                    matrix[i][j] = Cell(**arch_1).path_distance(Cell(**arch_2))        
+                    matrix[i][j] = Cell(**arch_1).path_distance(Cell(**arch_2))
                 else:
                     print('{} is an invalid distance'.format(distance))
                     sys.exit()

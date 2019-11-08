@@ -12,13 +12,14 @@ def algo_params(param_str):
     params = []
 
     if param_str == 'main_experiments':
-        params.append({'algo_name':'bananas', 'total_queries':150})   
-        params.append({'algo_name':'random', 'total_queries':150})
-        params.append({'algo_name':'evolution', 'total_queries':150})
-        params.append({'algo_name':'gp_bayesopt', 'total_queries':150})        
+        params.append({'algo_name':'bananas+', 'total_queries':150})
+        #params.append({'algo_name':'bananas_plus', 'total_queries':150})
+        #params.append({'algo_name':'random', 'total_queries':150})
+        #params.append({'algo_name':'evolution', 'total_queries':150})
+        #params.append({'algo_name':'gp_bayesopt', 'total_queries':150})
 
     elif param_str == 'ablation':
-        params.append({'algo_name':'bananas', 'total_queries':150})   
+        params.append({'algo_name':'bananas', 'total_queries':150})
         params.append({'algo_name':'bananas', 'total_queries':150, 'encode_paths':False})
         params.append({'algo_name':'gp_bayesopt', 'total_queries':150, 'distance':'path_distance'})
         params.append({'algo_name':'gp_bayesopt', 'total_queries':150, 'distance':'edit_distance'})
@@ -42,7 +43,7 @@ def algo_params(param_str):
         params.append({'algo_name':'bananas', 'total_queries':150, 'deterministic':False})
 
     elif param_str == 'test':
-        params.append({'algo_name':'bananas', 'total_queries':30})   
+        params.append({'algo_name':'bananas', 'total_queries':30})
         params.append({'algo_name':'random', 'total_queries':30})
         params.append({'algo_name':'evolution', 'total_queries':30})
         params.append({'algo_name':'gp_bayesopt', 'total_queries':30})

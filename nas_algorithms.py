@@ -11,6 +11,7 @@ from data import Data
 from acquisition_functions import acq_fn
 from meta_neural_net import MetaNeuralnet
 from bo.bo.probo import ProBO
+from sklearn.linear_model import BayesianRidge
 
 def run_nas_algorithm(algo_params, metann_params):
 
@@ -29,6 +30,8 @@ def run_nas_algorithm(algo_params, metann_params):
         data = evolution_search(search_space, **ps)
     elif algo_name == 'bananas':
         data = bananas(search_space, mp, **ps)
+    elif algo_name == 'bananas+':
+        data = bananas_plus(search_space, mp, **ps)
     elif algo_name == 'gp_bayesopt':
         data = gp_bayesopt_search(search_space, **ps)
     else:
@@ -45,7 +48,7 @@ def run_nas_algorithm(algo_params, metann_params):
 def compute_best_test_losses(data, k, total_queries):
     """
     Given full data from a completed nas algorithm,
-    output the test error of the best architecture 
+    output the test error of the best architecture
     after every multiple of k
     """
     results = []
@@ -58,21 +61,21 @@ def compute_best_test_losses(data, k, total_queries):
 
 
 def random_search(search_space,
-                    total_queries=100, 
+                    total_queries=100,
                     k=10,
-                    allow_isomorphisms=False, 
+                    allow_isomorphisms=False,
                     deterministic=True,
                     verbose=1):
-    """ 
+    """
     random search
     """
-    data = search_space.generate_random_dataset(num=total_queries, 
-                                                allow_isomorphisms=allow_isomorphisms, 
+    data = search_space.generate_random_dataset(num=total_queries,
+                                                allow_isomorphisms=allow_isomorphisms,
                                                 deterministic_loss=deterministic)
-    
+
     if verbose:
         top_5_loss = sorted([d[2] for d in data])[:min(5, len(data))]
-        print('Query {}, top 5 val losses {}'.format(total_queries, top_5_loss))    
+        print('Query {}, top 5 val losses {}'.format(total_queries, top_5_loss))
     return data
 
 
@@ -82,14 +85,14 @@ def evolution_search(search_space,
                         population_size=30,
                         total_queries=100,
                         tournament_size=10,
-                        mutation_rate=1.0, 
+                        mutation_rate=1.0,
                         allow_isomorphisms=False,
                         deterministic=True,
                         verbose=1):
     """
     regularized evolution
     """
-    data = search_space.generate_random_dataset(num=num_init, 
+    data = search_space.generate_random_dataset(num=num_init,
                                                 allow_isomorphisms=allow_isomorphisms,
                                                 deterministic_loss=deterministic)
     arches = [d[0] for d in data]
@@ -123,12 +126,11 @@ def evolution_search(search_space,
 
     return data
 
-
-def bananas(search_space, metann_params,
-            num_init=10, 
-            k=10, 
-            total_queries=150, 
-            num_ensemble=5, 
+def bananas_plus(search_space, metann_params,
+            num_init=10,
+            k=1,
+            total_queries=150,
+            num_ensemble=5,
             acq_opt_type='mutation',
             explore_type='its',
             encode_paths=True,
@@ -139,8 +141,75 @@ def bananas(search_space, metann_params,
     Bayesian optimization with a neural network model
     """
 
-    data = search_space.generate_random_dataset(num=num_init, 
-                                                encode_paths=encode_paths, 
+    data = search_space.generate_random_dataset(num=num_init,
+                                                encode_paths=encode_paths,
+                                                allow_isomorphisms=allow_isomorphisms,
+                                                deterministic_loss=deterministic)
+    query = num_init + k
+
+    while query <= total_queries:
+
+        candidates = search_space.get_candidates(data,
+                                                acq_opt_type=acq_opt_type,
+                                                encode_paths=encode_paths,
+                                                allow_isomorphisms=allow_isomorphisms,
+                                                deterministic_loss=deterministic)
+        xcandidates = np.array([c[1] for c in candidates])
+        predictions = []
+        stdevs = []
+
+        # train an ensemble of neural networks
+        xtrain = np.array([d[1] for d in data])
+        ytrain = np.array([d[2] for d in data])
+        train_error = 0
+
+        linreg = BayesianRidge()
+        linreg.fit(xtrain, ytrain)
+
+        preds, stds = linreg.predict(xcandidates, return_std = True)
+
+        # predict the validation loss of the candidate architectures
+        predictions.append(preds)
+        stdevs.append(stds)
+
+        if verbose:
+            print('Query {}, Meta neural net train error: {}'.format(query, train_error))
+
+        # compute the acquisition function for all the candidate architectures
+        sorted_indices = acq_fn(predictions, explore_type, stdevs)
+
+        # add the k arches with the minimum acquisition function values
+        for i in sorted_indices[:k]:
+            archtuple = search_space.query_arch(candidates[i][0],
+                                                encode_paths=encode_paths,
+                                                deterministic=deterministic)
+            data.append(archtuple)
+
+        if verbose:
+            top_5_loss = sorted([d[2] for d in data])[:min(5, len(data))]
+            print('Query {}, top 5 val losses {}'.format(query, top_5_loss))
+
+        query += k
+
+    return data
+
+def bananas(search_space, metann_params,
+            num_init=10,
+            k=10,
+            total_queries=150,
+            num_ensemble=5,
+            acq_opt_type='mutation',
+            explore_type='its',
+            encode_paths=True,
+            allow_isomorphisms=False,
+            deterministic=True,
+            verbose=1):
+    """
+    Bayesian optimization with a neural network model
+    """
+
+    data = search_space.generate_random_dataset(num=num_init,
+                                                encode_paths=encode_paths,
                                                 allow_isomorphisms=allow_isomorphisms,
                                                 deterministic_loss=deterministic)
     specs = [d[0] for d in data]
@@ -150,9 +219,9 @@ def bananas(search_space, metann_params,
 
     while query <= total_queries:
 
-        candidates = search_space.get_candidates(data, 
+        candidates = search_space.get_candidates(data,
                                                 acq_opt_type=acq_opt_type,
-                                                encode_paths=encode_paths, 
+                                                encode_paths=encode_paths,
                                                 allow_isomorphisms=allow_isomorphisms,
                                                 deterministic_loss=deterministic)
         xcandidates = np.array([c[1] for c in candidates])
@@ -227,7 +296,7 @@ def gp_bayesopt_search(search_space,
     data = Namespace()
 
     # Set up initial data
-    init_data = search_space.generate_random_dataset(num=num_init, 
+    init_data = search_space.generate_random_dataset(num=num_init,
                                                     deterministic_loss=deterministic)
     data.X = [d[0] for d in init_data]
     data.y = np.array([[d[2]] for d in init_data])

@@ -12,6 +12,9 @@ from params import *
 
 def run_experiments(args, save_dir):
 
+    os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"   # see issue #152
+    os.environ["CUDA_VISIBLE_DEVICES"] = ""
+
     trials = args.trials
     out_file = args.output_filename
     metann_params = meta_neuralnet_params(args.search_space)
@@ -65,7 +68,7 @@ def main(args):
     logging.info(args)
 
     run_experiments(args, save_dir)
-    
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Args for BANANAS experiments')
