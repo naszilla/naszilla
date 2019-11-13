@@ -143,18 +143,19 @@ def bananas(search_space, metann_params,
                                                 encode_paths=encode_paths, 
                                                 allow_isomorphisms=allow_isomorphisms,
                                                 deterministic_loss=deterministic)
-    specs = [d[0] for d in data]
-    xtrain = np.array([d[1] for d in data])
-    ytrain = np.array([d[2] for d in data])
     query = num_init + k
 
     while query <= total_queries:
+
+        xtrain = np.array([d[1] for d in data])
+        ytrain = np.array([d[2] for d in data])
 
         candidates = search_space.get_candidates(data, 
                                                 acq_opt_type=acq_opt_type,
                                                 encode_paths=encode_paths, 
                                                 allow_isomorphisms=allow_isomorphisms,
                                                 deterministic_loss=deterministic)
+
         xcandidates = np.array([c[1] for c in candidates])
         predictions = []
 
