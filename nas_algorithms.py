@@ -50,7 +50,7 @@ def compute_best_test_losses(data, k, total_queries):
     """
     results = []
     for query in range(k, total_queries + k, k):
-        best_arch = sorted(data, key=lambda i:i[2])[0]
+        best_arch = sorted(data[:query], key=lambda i:i[2])[0]
         test_error = best_arch[3]
         results.append((query, test_error))
 
@@ -110,6 +110,7 @@ def evolution_search(search_space,
         mutated = search_space.mutate_arch(arches[best_index], mutation_rate)
         archtuple = search_space.query_arch(mutated, deterministic=deterministic)
         data.append(archtuple)
+        population.append(len(data) - 1)
 
         # kill the worst from the population
         if len(population) >= population_size:
@@ -167,6 +168,9 @@ def bananas(search_space, metann_params,
 
             # predict the validation loss of the candidate architectures
             predictions.append(np.squeeze(meta_neuralnet.predict(xcandidates)))
+
+            # clear the tensorflow graph
+            tf.reset_default_graph()
 
         train_error /= num_ensemble
         if verbose:
