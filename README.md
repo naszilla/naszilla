@@ -48,7 +48,7 @@ The error on the test set should be 2.57%. This can be run on a CPU or GPU, but 
 <img src="img/bananas_reduction.png" alt="bananas_reduction" width="47%">
 </p>
 <p align="center">
-The best neural architecture found by BANANAS on CIFAR-10. Convolutional cell (left), and normal cell (right).
+The best neural architecture found by BANANAS on CIFAR-10. Convolutional cell (left), and reduction cell (right).
 </p>
 
 ## Train BANANAS architecture
