@@ -5,6 +5,7 @@ import sys
 import copy
 import numpy as np
 import random
+import tensorflow as tf
 from argparse import Namespace
 
 from data import Data
@@ -92,12 +93,11 @@ def evolution_search(search_space,
     data = search_space.generate_random_dataset(num=num_init, 
                                                 allow_isomorphisms=allow_isomorphisms,
                                                 deterministic_loss=deterministic)
-    arches = [d[0] for d in data]
     val_losses = [d[2] for d in data]
     query = num_init
 
     if num_init <= population_size:
-        population = range(num_init)
+        population = [i for i in range(num_init)]
     else:
         population = np.argsort(val_losses)[:population_size]
 
@@ -107,14 +107,17 @@ def evolution_search(search_space,
         # from a random subset of the population
         sample = random.sample(population, tournament_size)
         best_index = sorted([(i, val_losses[i]) for i in sample], key=lambda i:i[1])[0][0]
-        mutated = search_space.mutate_arch(arches[best_index], mutation_rate)
+        mutated = search_space.mutate_arch(data[best_index][0], mutation_rate)
         archtuple = search_space.query_arch(mutated, deterministic=deterministic)
+        
         data.append(archtuple)
+        val_losses.append(archtuple[2])
         population.append(len(data) - 1)
 
         # kill the worst from the population
         if len(population) >= population_size:
-            population = np.argsort(val_losses)[:population_size]
+            worst_index = sorted([(i, val_losses[i]) for i in population], key=lambda i:i[1])[-1][0]
+            population.remove(worst_index)
 
         if verbose and (query % k == 0):
             top_5_loss = sorted([d[2] for d in data])[:min(5, len(data))]
