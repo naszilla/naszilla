@@ -17,7 +17,7 @@ BANANAS is a neural architecture search (NAS) algorithm which uses Bayesian opti
 - matplotlib, jupyter
 - nasbench (follow the installation instructions [here](https://github.com/google-research/nasbench))
 
-You will also need our fork of the darts repo:
+If you run experiments on DARTS, you will need our fork of the darts repo:
 - Download the repo: https://github.com/naszilla/darts
 - If the repo is not in your home directory, i.e., `~/darts`, then update line 5 of `bananas/darts/arch.py` and line 8 of `bananas/train_arch_runner.py` with the correct path to this repo
 

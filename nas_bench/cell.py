@@ -216,3 +216,24 @@ class Cell:
         graph_dist = np.sum(np.array(self.matrix) != np.array(other.matrix))
         ops_dist = np.sum(np.array(self.ops) != np.array(other.ops))
         return (graph_dist + ops_dist)
+
+    def nasbot_distance(self, other):
+        # distance based on OTMANN distance adapted to cell-based search spaces
+        # see our arxiv paper for more details
+
+        row_sums = sorted(np.array(self.matrix).sum(axis=0))
+        col_sums = sorted(np.array(self.matrix).sum(axis=1))
+
+        other_row_sums = sorted(np.array(other.matrix).sum(axis=0))
+        other_col_sums = sorted(np.array(other.matrix).sum(axis=1))
+
+        row_dist = np.sum(np.abs(np.subtract(row_sums, other_row_sums)))
+        col_dist = np.sum(np.abs(np.subtract(col_sums, other_col_sums)))
+
+        counts = [self.ops.count(op) for op in OPS]
+        other_counts = [other.ops.count(op) for op in OPS]
+
+        ops_dist = np.sum(np.abs(np.subtract(counts, other_counts)))
+
+        return (row_dist + col_dist + ops_dist)
+
