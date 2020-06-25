@@ -61,6 +61,8 @@ class MyGpDistmatPP(DiscPP):
     
     from data import Data
     self.distmat = Data.generate_distance_matrix
+    #print('distmat')
+    #print(self.distmat(xmat1, xmat2, self.modelp.distance))
     return self.distmat(xmat1, xmat2, self.modelp.distance)
 
   def print_inference_result(self):

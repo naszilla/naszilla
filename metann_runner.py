@@ -92,7 +92,7 @@ def run(args):
     if query == 0:
         print('about to generate {} random'.format(k))
         data = search_space.generate_random_dataset(num=k, train=False)
-        arches = [d[0] for d in data]
+        arches = [d['spec'] for d in data]
 
         next_arches = []
         for arch in arches:

@@ -65,7 +65,8 @@ class MetaNeuralnet:
             batch_size=32, 
             lr=.01, 
             verbose=0, 
-            regularization=0):
+            regularization=0,
+            **kwargs):
 
         if loss == 'mle':
             loss_fn = mle_loss
@@ -82,6 +83,7 @@ class MetaNeuralnet:
         optimizer = keras.optimizers.Adam(lr=lr, beta_1=.9, beta_2=.99)
 
         self.model.compile(optimizer=optimizer, loss=loss_fn)
+        #print(self.model.summary())
         self.model.fit(xtrain, ytrain, 
                         batch_size=batch_size, 
                         epochs=epochs, 

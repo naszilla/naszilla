@@ -45,6 +45,18 @@ def acq_fn(predictions, explore_type='its'):
         min_prediction = np.min(predictions, axis=0)
         sorted_indices = np.argsort(min_prediction)
 
+    # Top mean
+    elif explore_type == 'mean':
+        mean = np.mean(predictions, axis=0)
+        sorted_indices = np.argsort(mean)
+
+    elif explore_type == 'confidence':
+        confidence_factor = 2
+        mean = np.mean(predictions, axis=0)
+        std = np.sqrt(np.var(predictions, axis=0))
+        conf = mean + confidence_factor * std
+        sorted_indices = np.argsort(conf)
+
     # Independent Thompson sampling (ITS) acquisition function
     elif explore_type == 'its':
         mean = np.mean(predictions, axis=0)

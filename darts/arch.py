@@ -1,19 +1,21 @@
 import numpy as np
 import sys
 import os
+import copy
+import random
 
 sys.path.append(os.path.expanduser('~/darts/cnn'))
 from train_class import Train
 
 OPS = ['none',
-        'max_pool_3x3',
-        'avg_pool_3x3',
-        'skip_connect',
-        'sep_conv_3x3',
-        'sep_conv_5x5',
-        'dil_conv_3x3',
-        'dil_conv_5x5'
-        ]
+       'max_pool_3x3',
+       'avg_pool_3x3',
+       'skip_connect',
+       'sep_conv_3x3',
+       'sep_conv_5x5',
+       'dil_conv_3x3',
+       'dil_conv_5x5'
+       ]
 NUM_VERTICES = 4
 INPUT_1 = 'c_k-2'
 INPUT_2 = 'c_k-1'
@@ -55,16 +57,21 @@ class Arch:
 
         return (normal, reduction)
 
+    def get_arch_list(self):
+        # convert tuple to list so that it is mutable
+        arch_list = []
+        for cell in self.arch:
+            arch_list.append([])
+            for pair in cell:
+                arch_list[-1].append([])
+                for num in pair:
+                    arch_list[-1][-1].append(num)
+        return arch_list
+
     def mutate(self, edits):
         """ mutate a single arch """
         # first convert tuple to array so that it is mutable
-        mutation = []
-        for cell in self.arch:
-            mutation.append([])
-            for pair in cell:
-                mutation[-1].append([])
-                for num in pair:
-                    mutation[-1][-1].append(num)
+        mutation = self.get_arch_list()
 
         #make mutations
         for _ in range(edits):
@@ -86,7 +93,7 @@ class Arch:
     def get_paths(self):
         """ return all paths from input to output """
 
-        path_builder = [[[], [], [], []], [[], [], [], [], ]]
+        path_builder = [[[], [], [], []], [[], [], [], []]]
         paths = [[], []]
 
         for i, cell in enumerate(self.arch):

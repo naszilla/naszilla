@@ -46,7 +46,7 @@ class ProBO(object):
     self.datapkl = os.path.join(self.probop.tmpdir, 'data.pkl')
     self.nextptpkl = os.path.join(self.probop.tmpdir, 'nextpt.pkl')
 
-  def run_bo(self):
+  def run_bo(self, verbose=False):
     """ Main BO loop. """
     # Serialize makerp 
     with open(self.configpkl, 'wb') as f:
@@ -71,15 +71,15 @@ class ProBO(object):
 
       # Call fn on nextpt
       nextpt = pickle.load(open(self.nextptpkl, 'rb'))
-      print('STARTING QUERY')
       self.fh.call_fn_and_add_data(nextpt)
-      print('FINISHED QUERY')
-      if iteridx % 10 == 0:
+      print('FINISHED QUERY', iteridx)
+      if verbose and iteridx % 10 == 0:
         print('iter', iteridx)
         print('Data is:')
         print(self.data.y)
       itertime = time.time()-starttime
-      self.print_iter_info(iteridx, itertime)
+      if iteridx % 10 == 0:
+        self.print_iter_info(iteridx, itertime)
       self.post_iteration()
 
   def print_iter_info(self, iteridx, itertime):

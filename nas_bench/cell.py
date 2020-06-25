@@ -2,6 +2,9 @@ import numpy as np
 import copy
 import itertools
 import random
+import sys
+import os
+import pickle
 
 from nasbench import api
 
@@ -38,7 +41,9 @@ class Cell:
     def random_cell(cls, nasbench):
         """ 
         From the NASBench repository 
-        https://github.com/google-research/nasbench
+
+        one-hot adjacency matrix
+        draw [0,1] for each slot in the adjacency matrix
         """
         while True:
             matrix = np.random.choice(
@@ -54,23 +59,29 @@ class Cell:
                     'ops': ops
                 }
 
-    def get_val_loss(self, nasbench, deterministic=1, patience=50):
+    def get_val_loss(self, nasbench, deterministic=1, patience=50, epochs=None, dataset=None):
         if not deterministic:
             # output one of the three validation accuracies at random
-            return (100*(1 - nasbench.query(api.ModelSpec(matrix=self.matrix, ops=self.ops))['validation_accuracy']))
+            if epochs:
+                return (100*(1 - nasbench.query(api.ModelSpec(matrix=self.matrix, ops=self.ops), epochs=epochs)['validation_accuracy']))
+            else:
+                return (100*(1 - nasbench.query(api.ModelSpec(matrix=self.matrix, ops=self.ops))['validation_accuracy']))
         else:        
             # query the api until we see all three accuracies, then average them
             # a few architectures only have two accuracies, so we use patience to avoid an infinite loop
             accs = []
             while len(accs) < 3 and patience > 0:
                 patience -= 1
-                acc = nasbench.query(api.ModelSpec(matrix=self.matrix, ops=self.ops))['validation_accuracy']
+                if epochs:
+                    acc = nasbench.query(api.ModelSpec(matrix=self.matrix, ops=self.ops), epochs=epochs)['validation_accuracy']
+                else:
+                    acc = nasbench.query(api.ModelSpec(matrix=self.matrix, ops=self.ops))['validation_accuracy']
                 if acc not in accs:
                     accs.append(acc)
-            return round(100*(1-np.mean(accs)), 3)            
+            return round(100*(1-np.mean(accs)), 4)            
 
 
-    def get_test_loss(self, nasbench, patience=50):
+    def get_test_loss(self, nasbench, patience=50, epochs=None, dataset=None):
         """
         query the api until we see all three accuracies, then average them
         a few architectures only have two accuracies, so we use patience to avoid an infinite loop
@@ -78,10 +89,16 @@ class Cell:
         accs = []
         while len(accs) < 3 and patience > 0:
             patience -= 1
-            acc = nasbench.query(api.ModelSpec(matrix=self.matrix, ops=self.ops))['test_accuracy']
+            if epochs:
+                acc = nasbench.query(api.ModelSpec(matrix=self.matrix, ops=self.ops), epochs=epochs)['test_accuracy']
+            else:
+                acc = nasbench.query(api.ModelSpec(matrix=self.matrix, ops=self.ops))['test_accuracy']
             if acc not in accs:
                 accs.append(acc)
-        return round(100*(1-np.mean(accs)), 3)
+        return round(100*(1-np.mean(accs)), 4)
+
+    def get_num_params(self, nasbench):
+        return nasbench.query(api.ModelSpec(matrix=self.matrix, ops=self.ops))['trainable_parameters']
 
     def perturb(self, nasbench, edits=1):
         """ 
@@ -109,16 +126,22 @@ class Cell:
             'ops': new_ops
         }
 
-    def mutate(self, nasbench, mutation_rate=1.0):
+    def mutate(self, 
+               nasbench, 
+               mutation_rate=1.0, 
+               patience=5000):
         """
-        similar to perturb. A stochastic approach to perturbing the cell
+        A stochastic approach to perturbing the cell
         inspird by https://github.com/google-research/nasbench
         """
-        while True:
+        p = 0
+        while p < patience:
+            p += 1
             new_matrix = copy.deepcopy(self.matrix)
             new_ops = copy.deepcopy(self.ops)
 
-            edge_mutation_prob = mutation_rate / NUM_VERTICES
+            edge_mutation_prob = mutation_rate / (NUM_VERTICES * (NUM_VERTICES - 1) / 2)
+            # flip each edge w.p. so expected flips is 1. same for ops
             for src in range(0, NUM_VERTICES - 1):
                 for dst in range(src + 1, NUM_VERTICES):
                     if random.random() < edge_mutation_prob:
@@ -136,8 +159,9 @@ class Cell:
                     'matrix': new_matrix,
                     'ops': new_ops
                 }
+        return self.mutate(nasbench, mutation_rate+1)
 
-    def encode_cell(self):
+    def encode_standard(self):
         """ 
         compute the "standard" encoding,
         i.e. adjacency matrix + op list encoding 
@@ -190,16 +214,17 @@ class Cell:
                 else:
                     index += len(OPS) ** i * (mapping[path[i]] + 1)
 
+        path_indices.sort()
         return tuple(path_indices)
 
     def encode_paths(self):
         """ output one-hot encoding of paths """
         num_paths = sum([len(OPS) ** i for i in range(OP_SPOTS + 1)])
         path_indices = self.get_path_indices()
-        path_encoding = np.zeros(num_paths)
+        encoding = np.zeros(num_paths)
         for index in path_indices:
-            path_encoding[index] = 1
-        return path_encoding
+            encoding[index] = 1
+        return encoding
 
     def path_distance(self, other):
         """ 
@@ -207,6 +232,15 @@ class Cell:
         by comparing their path encodings
         """
         return np.sum(np.array(self.encode_paths() != np.array(other.encode_paths())))
+
+    def trunc_path_distance(self, other, cutoff=40):
+        """ 
+        compute the distance between two architectures
+        by comparing their path encodings
+        """
+        encoding = self.encode_paths()[:cutoff]
+        other_encoding = other.encode_paths()[:cutoff]
+        return np.sum(np.array(encoding) != np.array(other_encoding))
 
     def edit_distance(self, other):
         """
@@ -218,8 +252,7 @@ class Cell:
         return (graph_dist + ops_dist)
 
     def nasbot_distance(self, other):
-        # distance based on OTMANN distance adapted to cell-based search spaces
-        # see our arxiv paper for more details
+        # distance based on optimal transport between row sums, column sums, and ops
 
         row_sums = sorted(np.array(self.matrix).sum(axis=0))
         col_sums = sorted(np.array(self.matrix).sum(axis=1))
