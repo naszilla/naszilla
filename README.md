@@ -12,15 +12,15 @@ BANANAS is a neural architecture search (NAS) algorithm which uses Bayesian opti
 </p>
 
 ## Requirements
-- tensorflow == 1.14.0
-- pytorch == 1.2.0, torchvision == 0.4.0
-- matplotlib, jupyter
+- jupyter
+- tensorflow == 1.14.0 (used for all experiments)
 - nasbench (follow the installation instructions [here](https://github.com/google-research/nasbench))
-
+- nas-bench-201 (follow the installation instructions [here](https://github.com/D-X-Y/NAS-Bench-201))
+- pytorch == 1.2.0, torchvision == 0.4.0 (used for experiments on the DARTS search space)
+- pybnn (used only for the DNGO baselien algorithm. Installation instructions [here](https://github.com/automl/pybnn))
 If you run experiments on DARTS, you will need our fork of the darts repo:
 - Download the repo: https://github.com/naszilla/darts
 - If the repo is not in your home directory, i.e., `~/darts`, then update line 5 of `bananas/darts/arch.py` and line 8 of `bananas/train_arch_runner.py` with the correct path to this repo
-
 
 
 ## Train a meta neural network with a notebook on the NASBench dataset
@@ -70,6 +70,11 @@ python run_experiments_sequential.py
 ```
 This will test the nasbench algorithm against several other NAS algorithms on the NASBench search space.
 To customize your experiment, open `params.py`. Here, you can change the hyperparameters and the algorithms to run.
+To run experiments with NAS-Bench-201, download `NAS-Bench-201-v1_0-e61699.pth` and place it in the top level folder of this repo.
+Choose between cifar10, cifar100, and imagenet. For example,
+```
+python run_experiments_sequential.py --search_space nasbench_201_cifar10
+```
 
 <p align="center">
 <img src="img/nasbench_plot.png" alt="nasbench_plot" width="70%">
