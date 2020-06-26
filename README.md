@@ -18,6 +18,7 @@ BANANAS is a neural architecture search (NAS) algorithm which uses Bayesian opti
 - nas-bench-201 (follow the installation instructions [here](https://github.com/D-X-Y/NAS-Bench-201))
 - pytorch == 1.2.0, torchvision == 0.4.0 (used for experiments on the DARTS search space)
 - pybnn (used only for the DNGO baselien algorithm. Installation instructions [here](https://github.com/automl/pybnn))
+
 If you run experiments on DARTS, you will need our fork of the darts repo:
 - Download the repo: https://github.com/naszilla/darts
 - If the repo is not in your home directory, i.e., `~/darts`, then update line 5 of `bananas/darts/arch.py` and line 8 of `bananas/train_arch_runner.py` with the correct path to this repo
