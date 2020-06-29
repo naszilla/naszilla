@@ -11,44 +11,39 @@ def algo_params(param_str):
     """
     params = []
 
-    if param_str == 'main_experiments':
-        params.append({'algo_name':'bananas', 'total_queries':150})   
+    if param_str == 'test':
+        params.append({'algo_name':'random', 'total_queries':30})
+        params.append({'algo_name':'evolution', 'total_queries':30})
+        params.append({'algo_name':'bananas', 'total_queries':30})   
+        params.append({'algo_name':'gp_bayesopt', 'total_queries':30})
+        params.append({'algo_name':'dngo', 'total_queries':30})
+
+    elif param_str == 'test_simple': 
+        params.append({'algo_name':'random', 'total_queries':30})
+        params.append({'algo_name':'evolution', 'total_queries':30})
+
+    elif param_str == 'random': 
+        params.append({'algo_name':'random', 'total_queries':10})
+
+    elif param_str == 'bananas':
+        params.append({'algo_name':'bananas', 'total_queries':150, 'verbose':0})
+
+    elif param_str == 'main_experiments':
         params.append({'algo_name':'random', 'total_queries':150})
         params.append({'algo_name':'evolution', 'total_queries':150})
+        params.append({'algo_name':'bananas', 'total_queries':150})  
         params.append({'algo_name':'gp_bayesopt', 'total_queries':150})        
+        params.append({'algo_name':'dngo', 'total_queries':150})
 
     elif param_str == 'ablation':
         params.append({'algo_name':'bananas', 'total_queries':150})   
-        params.append({'algo_name':'bananas', 'total_queries':150, 'encode_paths':False})
+        params.append({'algo_name':'bananas', 'total_queries':150, 'encoding_type':'adjacency'})
         params.append({'algo_name':'gp_bayesopt', 'total_queries':150, 'distance':'path_distance'})
         params.append({'algo_name':'gp_bayesopt', 'total_queries':150, 'distance':'edit_distance'})
         params.append({'algo_name':'bananas', 'total_queries':150, 'acq_opt_type':'random'})
 
-    elif param_str == 'acq_fn':
-        params.append({'algo_name':'bananas', 'total_queries':150, 'explore_type':'ei'})
-        params.append({'algo_name':'bananas', 'total_queries':150, 'explore_type':'pi'})
-        params.append({'algo_name':'bananas', 'total_queries':150, 'explore_type':'ts'})
-
-    elif param_str == '500_queries':
-        params.append({'algo_name':'random', 'total_queries':500})
-        params.append({'algo_name':'evolution', 'total_queries':500})
-        params.append({'algo_name':'gp_bayesopt', 'total_queries':500})
-        params.append({'algo_name':'bananas', 'total_queries':500})
-
-    elif param_str == 'random_validation_error':
-        params.append({'algo_name':'random', 'total_queries':150, 'deterministic':False})
-        params.append({'algo_name':'evolution', 'total_queries':150, 'deterministic':False})
-        params.append({'algo_name':'gp_bayesopt', 'total_queries':150, 'deterministic':False})
-        params.append({'algo_name':'bananas', 'total_queries':150, 'deterministic':False})
-
-    elif param_str == 'test':
-        params.append({'algo_name':'bananas', 'total_queries':30})   
-        params.append({'algo_name':'random', 'total_queries':30})
-        params.append({'algo_name':'evolution', 'total_queries':30})
-        params.append({'algo_name':'gp_bayesopt', 'total_queries':30})
-
     else:
-        print('invalid algorithm params')
+        print('invalid algorithm params: {}'.format(param_str))
         sys.exit()
 
     print('\n* Running experiment: ' + param_str)
@@ -58,15 +53,27 @@ def algo_params(param_str):
 def meta_neuralnet_params(param_str):
 
     if param_str == 'nasbench':
-        params = {'search_space':'nasbench', 'loss':'mae', 'num_layers':10, 'layer_width':20, \
+        params = {'search_space':'nasbench', 'dataset':'cifar10', 'loss':'mae', 'num_layers':10, 'layer_width':20, \
             'epochs':150, 'batch_size':32, 'lr':.01, 'regularization':0, 'verbose':0}
 
     elif param_str == 'darts':
-        params = {'search_space':'darts', 'loss':'mape', 'num_layers':10, 'layer_width':20, \
+        params = {'search_space':'darts', 'dataset':'cifar10', 'loss':'mape', 'num_layers':10, 'layer_width':20, \
             'epochs':10000, 'batch_size':32, 'lr':.00001, 'regularization':0, 'verbose':0}
 
+    elif param_str == 'nasbench_201_cifar10':
+        params = {'search_space':'nasbench_201', 'dataset':'cifar10', 'loss':'mae', 'num_layers':10, 'layer_width':20, \
+            'epochs':150, 'batch_size':32, 'lr':.01, 'regularization':0, 'verbose':0}
+
+    elif param_str == 'nasbench_201_cifar100':
+        params = {'search_space':'nasbench_201', 'dataset':'cifar100', 'loss':'mae', 'num_layers':10, 'layer_width':20, \
+            'epochs':150, 'batch_size':32, 'lr':.01, 'regularization':0, 'verbose':0}
+
+    elif param_str == 'nasbench_201_imagenet':
+        params = {'search_space':'nasbench_201', 'dataset':'ImageNet16-120', 'loss':'mae', 'num_layers':10, 'layer_width':20, \
+            'epochs':150, 'batch_size':32, 'lr':.01, 'regularization':0, 'verbose':0}
+
     else:
-        print('invalid meta neural net params')
+        print('invalid meta neural net params: {}'.format(param_str))
         sys.exit()
 
     return params
