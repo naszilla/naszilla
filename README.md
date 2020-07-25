@@ -39,9 +39,10 @@ If you run experiments on DARTS, you will need our fork of the darts repo:
 ## Evaluate pretrained BANANAS architecture
 The best architecture found by BANANAS on the DARTS search space achieved 2.57% test error. To evaluate our pretrained neural architecture, download the weights [bananas.pt](https://drive.google.com/file/d/1d8jnI0R9fvXBjkIY7CRogyxynEh6TWu_/view?usp=sharing) and put it inside the folder `<path-to-darts>/cnn`
 
-```
+```bash
 cd <path-to-darts>/cnn; python test.py --model_path bananas.pt
 ```
+
 The error on the test set should be 2.57%. This can be run on a CPU or GPU, but it will be faster on a GPU.
 
 <p align="center">
@@ -55,9 +56,10 @@ The best neural architecture found by BANANAS on CIFAR-10. Convolutional cell (l
 ## Train BANANAS architecture
 Train the best architecture found by BANANAS.
 
-```
+```bash
 cd <path-to-darts>/cnn; python train.py --auxiliary --cutout
 ```
+
 This will train the architecture from scratch, which takes about 34 hours on an NVIDIA V100 GPU. 
 The final test error should be 2.59%.
 Setting the random seed to 4 by adding `--seed 4` will result in a test error of 2.57%.
@@ -66,14 +68,16 @@ We report the random seeds and hardware used in Table 2 of our paper [here](http
 ## Run BANANAS on the NASBench search space
 To run BANANAS on NASBench, download `nasbench_only108.tfrecord` and place it in the top level folder of this repo.
 
-```
+```bash
 python run_experiments_sequential.py
 ```
+
 This will test the nasbench algorithm against several other NAS algorithms on the NASBench search space.
 To customize your experiment, open `params.py`. Here, you can change the hyperparameters and the algorithms to run.
 To run experiments with NAS-Bench-201, download `NAS-Bench-201-v1_0-e61699.pth` and place it in the top level folder of this repo.
 Choose between cifar10, cifar100, and imagenet. For example,
-```
+
+```bash
 python run_experiments_sequential.py --search_space nasbench_201_cifar10
 ```
 
@@ -84,12 +88,14 @@ python run_experiments_sequential.py --search_space nasbench_201_cifar10
 ## Run BANANAS on the DARTS search space
 We highly recommend using multiple GPUs to run BANANAS on the DARTS search space. You can run BANANAS in parallel on GCP using the shell script:
 
-```
+```bash
 run_experiments_parallel.sh
 ```
+
 ## Citation
 Please cite [our paper](https://arxiv.org/abs/1910.11858) if you use code from this repo:
-```
+
+```bibtex
 @article{white2019bananas,
   title={BANANAS: Bayesian Optimization with Neural Architectures for Neural Architecture Search},
   author={White, Colin and Neiswanger, Willie and Savani, Yash},
@@ -97,3 +103,4 @@ Please cite [our paper](https://arxiv.org/abs/1910.11858) if you use code from t
   year={2019}
 }
 ```
+
