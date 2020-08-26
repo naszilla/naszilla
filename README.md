@@ -92,11 +92,11 @@ We highly recommend using multiple GPUs to run BANANAS on the DARTS search space
 run_experiments_parallel.sh
 ```
 
-## Citation
-Please cite [our paper](https://arxiv.org/abs/1910.11858) if you use code from this repo:
-
 ## Contributions
 We welcome community contributions to this repo!
+
+## Citation
+Please cite [our paper](https://arxiv.org/abs/1910.11858) if you use code from this repo:
 
 ```bibtex
 @article{white2019bananas,
