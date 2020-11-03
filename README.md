@@ -49,8 +49,10 @@ This repository contains the official code for the following three papers, inclu
 ```bash
 python run_experiments.py --search_space nasbench_101 --queries 150 --trials 10
 ```
-This will test several NAS algorithms against each other on the NASBench-101 search space.
-To customize your experiment, open `params.py`. Here, you can change the algorithms to run and their hyperparameters.
+This will test several NAS algorithms against each other on the NASBench-101 search
+space.  To customize your experiment, open `params.py`. Here, you can change the
+algorithms to run and their hyperparameters. For details on running specific methods,
+see [these docs](docs/naszilla.md).
 
 ## Contributions
 Contributions are welcome!
