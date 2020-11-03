@@ -76,7 +76,7 @@ class AcqMapper(object):
       """ Acqmaps for MyGpDistmatPP """
       trans_data = get_trans_data()
       pp = MyGpDistmatPP(trans_data, self.amp.modelp, False)
-      pp.infer_post_and_update_samples(print_result=True)
+      pp.infer_post_and_update_samples(print_result=False)
       pmlist, _ = pp.sample_pp_pred(self.amp.nppred, xin_list) if acq_str=='ts' \
         else pp.sample_pp_post_pred(self.amp.nppred, xin_list, full_cov=True)
       return apply_acq_to_pmlist(pmlist, acq_str, trans_data)

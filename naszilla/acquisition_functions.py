@@ -1,15 +1,20 @@
 import numpy as np
+from scipy.stats import norm
 import sys
 
 # Different acquisition functions that can be used by BANANAS
-def acq_fn(predictions, explore_type='its'):
+def acq_fn(predictions, explore_type='its', ytrain=None, stds=None):
     predictions = np.array(predictions)
 
     # Upper confidence bound (UCB) acquisition function
     if explore_type == 'ucb':
         explore_factor = 0.5
-        mean = np.mean(predictions, axis=0)
-        std = np.sqrt(np.var(predictions, axis=0))
+        if stds is None:
+            mean = np.mean(predictions, axis=0)
+            std = np.sqrt(np.var(predictions, axis=0))
+        else:
+            mean = np.mean(predictions, axis=0)
+            std = stds
         ucb = mean - explore_factor * std
         sorted_indices = np.argsort(ucb)
 
