@@ -7,7 +7,7 @@ _arxiv:2007.04965_.
 
 Many algorithms for neural architecture search (NAS) represent each neural architecture in the search space as a directed acyclic graph (DAG), and then search over all DAGs by encoding the adjacency matrix and list of operations as a set of hyperparameters. Recent work has demonstrated that even small changes to the way each architecture is encoded can have a significant effect on the performance of NAS algorithms. We present the first formal study on the effect of architecture encodings for NAS.
 <p align="center">
-  <img src="../img/encodings_large.png" alt="encodings" width="90%">
+  <img src="../img/encodings.png" alt="encodings" width="90%">
 </p>
 
 ## Installation
