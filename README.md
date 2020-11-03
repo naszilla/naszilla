@@ -1,4 +1,5 @@
-# naszilla
+<p align="center"><img src="img/naszilla_banner.png" width=700 /></p>
+
 [![MIT licensed](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
 
 A repository to compare many popular NAS algorithms seamlessly across three popular benchmarks (NASBench 101, 201, and 301). You can implement your own NAS algorithm, and then easily compare it with ten algorithms across three benchmarks.
@@ -14,17 +15,17 @@ This repository contains the official code for the following three papers, inclu
     </tr>
     <tr> <!-- (1st row) -->
     <td rowspan="1" align="center" valign="middle" halign="middle"> <a href="https://arxiv.org/abs/2007.04965" target="_blank">A Study on Encodings for Neural Architecture Search</a> </td>
-    <td align="center" valign="middle"> <a href="https://github.com/naszilla/nas_encodings/blob/master/docs/encodings.md">encodings.md</a> </td>
+    <td align="center" valign="middle"> <a href="docs/encodings.md">encodings.md</a> </td>
     <td align="center" valign="middle"> <a href="https://abacus.ai/blog/2020/10/02/a-study-on-encodings-for-nas/" target="_blank">Blog Post</a> </td>
     </tr>
     <tr> <!-- (2nd row) -->
     <td rowspan="1" align="center" valign="middle" halign="middle"> <a href="https://arxiv.org/abs/1910.11858" target="_blank">BANANAS: Bayesian Optimization with Neural Architectures for Neural Architecture Search</a> </td>
-    <td align="center" valign="middle"> <a href="https://github.com/naszilla/nas_encodings/blob/master/docs/bananas.md">bananas.md</a> </td>
+    <td align="center" valign="middle"> <a href="docs/bananas.md">bananas.md</a> </td>
     <td align="center" valign="middle"> <a href="https://medium.com/reality-engines/bananas-a-new-method-for-neural-architecture-search-192d21959c0c" target="_blank">Blog Post</a> </td>
     </tr>
     <tr> <!-- (3rd row) -->
     <td rowspan="1" align="center" valign="middle" halign="middle"> <a href="https://arxiv.org/abs/2005.02960" target="_blank">Local Search is State of the Art for Neural Architecture Search Benchmarks</a> </td>
-    <td align="center" valign="middle"> <a href="https://github.com/naszilla/nas_encodings/blob/master/docs/local_search.md">local_search.md</a> </td>
+    <td align="center" valign="middle"> <a href="docs/local_search.md">local_search.md</a> </td>
     <td align="center" valign="middle"> <a href="https://abacus.ai/blog/local-search-is-state-of-the-art-for-neural-architecture-search-benchmarks/" target="_blank">Blog Post</a> </td>
     </tr>
  </tbody>
