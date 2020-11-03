@@ -10,7 +10,7 @@ This repository contains the official code for the following three papers, inclu
  <tbody>
     <tr align="center" valign="bottom">
       <th>Paper</th>
-      <th>Readme</th>
+      <th>README</th>
       <th>Blog Post</th>
     </tr>
     <tr> <!-- (1st row) -->
@@ -79,3 +79,28 @@ Please cite our papers if you use code from this repo:
   year={2020}
 }
 ```
+
+## Contents
+
+This repo contains [encodings](docs/encodings.md) for neural architecture search, a
+variety of NAS methods (including [BANANAS](docs/bananas.md), a neural predictor
+Bayesian optimization method, and [local search](docs/local_search.md) for NAS), and an
+easy interface for using multiple NAS benchmarks.
+
+Encodings:
+<p align="center">
+  <img src="img/encodings.png" alt="encodings" width="90%">
+</p>
+
+BANANAS:
+<p align="center">
+  <img src="img/metann_adj_train.png" alt="adj_train" width="24%">
+  <img src="img/metann_adj_test.png" alt="adj_test" width="24%">
+  <img src="img/metann_path_train.png" alt="path_train" width="24%">
+  <img src="img/metann_path_test.png" alt="path_test" width="24%">
+</p>
+
+Local search:
+<p align="center">
+  <img src="img/local_search.png" alt="local_search" width="65%">
+</p>
