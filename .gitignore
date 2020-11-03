@@ -1,4 +1,4 @@
-*.DS_Store
+# Naszilla files
 temp/
 results_output/
 nasbench_only108.tfrecord
@@ -9,6 +9,12 @@ index_hash.pkl
 notebooks/*.png
 notebooks/*.pdf
 *.out
+
+# Mac
+*.DS_Store
+
+# Vim
+*.sw*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
