@@ -14,7 +14,7 @@ def algo_params(param_str, queries=150, noise_factor=1):
         params.append({'algo_name':'evolution', 'total_queries':queries, 'noise_factor':noise_factor})
         params.append({'algo_name':'local_search', 'total_queries':queries, 'noise_factor':noise_factor, 'stop_at_minimum':False})
 
-    if param_str == 'all_algos':
+    elif param_str == 'all_algos':
         params.append({'algo_name':'bananas', 'total_queries':queries})
         params.append({'algo_name':'random', 'total_queries':queries})
         params.append({'algo_name':'evolution', 'total_queries':queries})
