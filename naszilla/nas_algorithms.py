@@ -261,7 +261,8 @@ def bananas(search_space,
         if acq_opt_type not in ['local_search', 'evolution']:
 
             # compute the acquisition function for all the candidate architectures
-            candidate_indices = acq_fn(candidate_predictions, explore_type=explore_type, ytrain=ytrain)
+            print('cand shape', np.array(candidate_predictions).shape)
+            candidate_indices = acq_fn(candidate_predictions, ytrain=ytrain, explore_type=explore_type)
 
             # add the k arches with the minimum acquisition function values
             for i in candidate_indices[:k]:
@@ -284,12 +285,9 @@ def bananas(search_space,
                 encoding = np.array([full['encoding']])
                 predictions = []
                 for i in range(len(ensemble)):
-                    predictions.append(np.squeeze(ensemble[i].predict(encoding)))
+                    predictions.append(np.squeeze(ensemble[i].predict(encoding), axis=1))
 
-                mean = np.mean(predictions, axis=0)
-                std = np.sqrt(np.var(predictions, axis=0))
-                sample = np.random.normal(mean, std)
-                return sample
+                return acq_fn(predictions, ytrain=ytrain, explore_type=explore_type)
 
             candidates = []
             best_arches = [arch['spec'] for arch in sorted(data, key=lambda i:i[loss])[:3]]
@@ -298,12 +296,11 @@ def bananas(search_space,
             for arch in best_arches:
                 nbrs = [*nbrs, *search_space.get_nbhd(arch)]
 
-            print('num nbrs', len(nbrs))
             if acq_opt_type == 'evolution':
                 np.random.shuffle(nbrs)
                 nbrs = nbrs[:25]
 
-            acq_vals = [get_acq_val(arch, ensemble) for arch in nbrs]
+            acq_vals = [np.squeeze(get_acq_val(arch, ensemble)) for arch in nbrs]
             indices = np.argsort(acq_vals)
             candidates = [nbrs[i] for i in indices[:k]]
 
