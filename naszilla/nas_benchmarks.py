@@ -4,7 +4,6 @@ import sys
 import os
 
 # todo check if it works to import these within each data class
-# also check if I actually need them here - oh, I could put each class in its own file
 from nasbench import api
 from nas_201_api import NASBench201API as API
 sys.path.append('../nasbench301')
@@ -313,7 +312,10 @@ class Nasbench101(Nasbench):
         contains the hash map, located at 
         https://drive.google.com/file/d/1yMRFxT6u3ZyfiWUPhtQ_B9FbuGN3X-Nf/view?usp=sharing
         """
-        self.index_hash = pickle.load(open(os.path.expanduser(index_hash_folder + 'index_hash.pkl'), 'rb'))
+        self.index_hash = None
+        index_hash_path = os.path.expanduser(index_hash_folder + 'index_hash.pkl')
+        if os.path.isfile(index_hash_path):
+            self.index_hash = pickle.load(open(index_hash_path, 'rb'))
 
         if not self.mf:
             self.nasbench = api.NASBench(os.path.expanduser(data_folder + 'nasbench_only108.tfrecord'))

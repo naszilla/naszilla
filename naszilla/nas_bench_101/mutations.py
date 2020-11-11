@@ -144,6 +144,16 @@ def path_mutate(nasbench,
                 mutation_rate=1.0,
                 patience=5000):
 
+    """
+    For NAS encodings experiments, some of the path-based encodings currently require a
+    hash map from path indices to cell architectuers. We have created a pickle file which
+    contains the hash map, located at 
+    https://drive.google.com/file/d/1yMRFxT6u3ZyfiWUPhtQ_B9FbuGN3X-Nf/view?usp=sharing
+    """
+    if not index_hash:
+        print('Error in nas_bench_101/mutations.py. Please download index_hash')
+        sys.exit()
+
     total_paths = sum([len(OPS) ** i for i in range(OP_SPOTS + 1)])
     if not cutoff:
         cutoff = total_paths
