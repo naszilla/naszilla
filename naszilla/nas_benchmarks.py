@@ -152,6 +152,10 @@ class Nasbench:
             h = self.get_hash(arch)
             dic[h] = 1
 
+        if acq_opt_type in ['local_search', 'evolution']:
+            print('This acq_opt_type is not yet implemented')
+            sys.exit()
+
         if acq_opt_type in ['mutation', 'mutation_random']:
             # mutate architectures with the lowest loss
             best_arches = [arch['spec'] for arch in sorted(data, key=lambda i:i[loss])[:num_arches_to_mutate * patience_factor]]

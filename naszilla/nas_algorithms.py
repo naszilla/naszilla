@@ -194,19 +194,18 @@ def bananas(search_space,
         ytrain = np.array([d[loss] for d in data])
 
         # get a set of candidate architectures
-        if acq_opt_type not in ['local_search', 'evolution']:
-            candidates = search_space.get_candidates(data,
-                                                     acq_opt_type=acq_opt_type,
-                                                     predictor_encoding=predictor_encoding, 
-                                                     mutate_encoding=mutate_encoding,
-                                                     num_arches_to_mutate=num_arches_to_mutate,
-                                                     max_mutation_rate=max_mutation_rate,
-                                                     loss=loss,
-                                                     deterministic_loss=deterministic,
-                                                     cutoff=cutoff)
+        candidates = search_space.get_candidates(data,
+                                                 acq_opt_type=acq_opt_type,
+                                                 predictor_encoding=predictor_encoding, 
+                                                 mutate_encoding=mutate_encoding,
+                                                 num_arches_to_mutate=num_arches_to_mutate,
+                                                 max_mutation_rate=max_mutation_rate,
+                                                 loss=loss,
+                                                 deterministic_loss=deterministic,
+                                                 cutoff=cutoff)
 
-            xcandidates = np.array([c['encoding'] for c in candidates])
-            candidate_predictions = []
+        xcandidates = np.array([c['encoding'] for c in candidates])
+        candidate_predictions = []
 
         # train an ensemble of neural networks
         train_error = 0
@@ -223,12 +222,10 @@ def bananas(search_space,
 
                 train_error += meta_neuralnet.fit(xtrain, ytrain, **net_params)
         
-                if acq_opt_type not in ['local_search', 'evolution']:
-                    # predict the validation loss of the candidate architectures
-                    candidate_predictions.append(np.squeeze(meta_neuralnet.predict(xcandidates)))
-                    tf.compat.v1.reset_default_graph()
-                else:
-                    ensemble.append(meta_neuralnet)
+
+                # predict the validation loss of the candidate architectures
+                candidate_predictions.append(np.squeeze(meta_neuralnet.predict(xcandidates)))
+                tf.compat.v1.reset_default_graph()
 
             elif predictor == 'gcn':
                 # train GCN and then make predictions on the test data
@@ -257,60 +254,18 @@ def bananas(search_space,
         if verbose == 2:
             print('query {}, Neural predictor train error: {}'.format(query, train_error))
 
+        # compute the acquisition function for all the candidate architectures
+        print('cand shape', np.array(candidate_predictions).shape)
+        candidate_indices = acq_fn(candidate_predictions, ytrain=ytrain, explore_type=explore_type)
 
-        if acq_opt_type not in ['local_search', 'evolution']:
+        # add the k arches with the minimum acquisition function values
+        for i in candidate_indices[:k]:
 
-            # compute the acquisition function for all the candidate architectures
-            print('cand shape', np.array(candidate_predictions).shape)
-            candidate_indices = acq_fn(candidate_predictions, ytrain=ytrain, explore_type=explore_type)
-
-            # add the k arches with the minimum acquisition function values
-            for i in candidate_indices[:k]:
-
-                arch_dict = search_space.query_arch(candidates[i]['spec'],
-                                                    predictor_encoding=predictor_encoding,
-                                                    deterministic=deterministic,
-                                                    cutoff=cutoff)
-                data.append(arch_dict)
-
-        else:
-            # run a more complex acq opt strategy
-
-            def get_acq_val(candidate, ensemble):
-                full = search_space.query_arch(candidate, 
-                                                train=False,
+            arch_dict = search_space.query_arch(candidates[i]['spec'],
                                                 predictor_encoding=predictor_encoding,
                                                 deterministic=deterministic,
                                                 cutoff=cutoff)
-                encoding = np.array([full['encoding']])
-                predictions = []
-                for i in range(len(ensemble)):
-                    predictions.append(np.squeeze(ensemble[i].predict(encoding), axis=1))
-
-                return acq_fn(predictions, ytrain=ytrain, explore_type=explore_type)
-
-            candidates = []
-            best_arches = [arch['spec'] for arch in sorted(data, key=lambda i:i[loss])[:3]]
-
-            nbrs = []
-            for arch in best_arches:
-                nbrs = [*nbrs, *search_space.get_nbhd(arch)]
-
-            if acq_opt_type == 'evolution':
-                np.random.shuffle(nbrs)
-                nbrs = nbrs[:25]
-
-            acq_vals = [np.squeeze(get_acq_val(arch, ensemble)) for arch in nbrs]
-            indices = np.argsort(acq_vals)
-            candidates = [nbrs[i] for i in indices[:k]]
-
-            for arch in candidates:
-
-                arch_dict = search_space.query_arch(arch,
-                                                    predictor_encoding=predictor_encoding,
-                                                    deterministic=deterministic,
-                                                    cutoff=cutoff)
-                data.append(arch_dict)
+            data.append(arch_dict)
 
         tf.keras.backend.clear_session()
 
