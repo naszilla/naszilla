@@ -16,14 +16,13 @@ def run_experiments(args, save_dir):
     # set up arguments
     trials = args.trials
     queries = args.queries
-    noise_factor = args.noise
     out_file = args.output_filename
     save_specs = args.save_specs
     metann_params = meta_neuralnet_params(args.metann_params)
     ss = args.search_space
     dataset = args.dataset
     mf = args.mf
-    algorithm_params = algo_params(args.algo_params, queries=queries, noise_factor=noise_factor)
+    algorithm_params = algo_params(args.algo_params, queries=queries)
     num_algos = len(algorithm_params)
     logging.info(algorithm_params)
 
@@ -106,7 +105,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Args for BANANAS experiments')
     parser.add_argument('--trials', type=int, default=500, help='Number of trials')
     parser.add_argument('--queries', type=int, default=150, help='Max number of queries/evaluations each NAS algorithm gets')
-    parser.add_argument('--noise', type=float, default=1, help='Amount of noise (for nasbench301)')
     parser.add_argument('--search_space', type=str, default='nasbench_101', help='nasbench_101, _201, or _301')
     parser.add_argument('--dataset', type=str, default='cifar10', help='cifar10, 100, or imagenet (for nasbench201)')
     parser.add_argument('--mf', type=bool, default=False, help='Multi fidelity: true or false (for nasbench101)')

@@ -96,7 +96,7 @@ class Cell201:
     def get_runtime(self, nasbench, dataset='cifar100'):
         return nasbench.query_by_index(index, dataset).get_eval('x-valid')['time']
 
-    def get_val_loss(self, nasbench, deterministic=1, dataset='cifar100', noise_factor=None):
+    def get_val_loss(self, nasbench, deterministic=1, dataset='cifar100'):
         index = nasbench.query_index_by_arch(self.string)
         if dataset == 'cifar10':
             results = nasbench.query_by_index(index, 'cifar10-valid')
@@ -112,7 +112,7 @@ class Cell201:
         else:
             return round(100-np.random.choice(accs), 10)
 
-    def get_test_loss(self, nasbench, dataset='cifar100', deterministic=1, noise_factor=None):
+    def get_test_loss(self, nasbench, dataset='cifar100', deterministic=1):
         index = nasbench.query_index_by_arch(self.string)
         results = nasbench.query_by_index(index, dataset)
 

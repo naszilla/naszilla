@@ -2,7 +2,7 @@ import sys
 import numpy as np
 
 
-def algo_params(param_str, queries=150, noise_factor=1):
+def algo_params(param_str, queries=150):
     """
       Return params list based on param_str.
     """
@@ -10,9 +10,9 @@ def algo_params(param_str, queries=150, noise_factor=1):
 
 
     if param_str == 'fast_algos':
-        params.append({'algo_name':'random', 'total_queries':queries, 'noise_factor':noise_factor})
-        params.append({'algo_name':'evolution', 'total_queries':queries, 'noise_factor':noise_factor})
-        params.append({'algo_name':'local_search', 'total_queries':queries, 'noise_factor':noise_factor, 'stop_at_minimum':False})
+        params.append({'algo_name':'random', 'total_queries':queries})
+        params.append({'algo_name':'evolution', 'total_queries':queries})
+        params.append({'algo_name':'local_search', 'total_queries':queries, 'stop_at_minimum':False})
 
     elif param_str == 'all_algos':
         params.append({'algo_name':'bananas', 'total_queries':queries})

@@ -33,15 +33,15 @@ class Cell301:
     def serialize(self):
         return tuple([tuple([tuple(pair) for pair in cell]) for cell in self.arch])
 
-    def get_val_loss(self, nasbench, deterministic=True, patience=50, epochs=None, dataset=None, noise_factor=1):
+    def get_val_loss(self, nasbench, deterministic=True, patience=50, epochs=None, dataset=None):
 
         genotype = self.convert_to_genotype(self.arch)
-        acc = nasbench[0].predict(config=genotype, representation="genotype", noise_factor=noise_factor)
+        acc = nasbench[0].predict(config=genotype, representation="genotype")
         return 100 - acc
         
-    def get_test_loss(self, nasbench, patience=50, epochs=None, dataset=None, noise_factor=1):
+    def get_test_loss(self, nasbench, patience=50, epochs=None, dataset=None):
         # currently only val_loss is supported. Just return the val loss here
-        return self.get_val_loss(nasbench, noise_factor=noise_factor)
+        return self.get_val_loss(nasbench)
         
     def convert_to_genotype(self, arch):
 

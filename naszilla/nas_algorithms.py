@@ -87,7 +87,6 @@ def random_search(search_space,
                   random_encoding='adj',
                   cutoff=0,
                   deterministic=True,
-                  noise_factor=1,
                   verbose=1):
     """ 
     random search
@@ -95,8 +94,7 @@ def random_search(search_space,
     data = search_space.generate_random_dataset(num=total_queries, 
                                                 random_encoding=random_encoding,
                                                 cutoff=cutoff,
-                                                deterministic_loss=deterministic,
-                                                noise_factor=noise_factor)
+                                                deterministic_loss=deterministic)
     
     if verbose:
         top_5_loss = sorted([d[loss] for d in data])[:min(5, len(data))]
@@ -116,7 +114,6 @@ def evolution_search(search_space,
                      cutoff=0,
                      random_encoding='adj',
                      deterministic=True,
-                     noise_factor=1,
                      regularize=True,
                      verbose=1):
     """
@@ -124,8 +121,7 @@ def evolution_search(search_space,
     """
     data = search_space.generate_random_dataset(num=num_init, 
                                                 random_encoding=random_encoding,
-                                                deterministic_loss=deterministic,
-                                                noise_factor=noise_factor)
+                                                deterministic_loss=deterministic)
 
     losses = [d[loss] for d in data]
     query = num_init
@@ -141,7 +137,7 @@ def evolution_search(search_space,
                                            mutation_rate=mutation_rate, 
                                            mutate_encoding=mutate_encoding,
                                            cutoff=cutoff)
-        arch_dict = search_space.query_arch(mutated, deterministic=deterministic, noise_factor=noise_factor)
+        arch_dict = search_space.query_arch(mutated, deterministic=deterministic)
 
         data.append(arch_dict)        
         losses.append(arch_dict[loss])
@@ -180,7 +176,6 @@ def bananas(search_space,
             mutate_encoding='adj',
             random_encoding='adj',
             deterministic=True,
-            noise_factor=1,
             verbose=1):
     """
     Bayesian optimization with a neural predictor
@@ -189,7 +184,6 @@ def bananas(search_space,
                                                 predictor_encoding=predictor_encoding, 
                                                 random_encoding=random_encoding,
                                                 deterministic_loss=deterministic,
-                                                noise_factor=noise_factor,
                                                 cutoff=cutoff)
 
     query = num_init + k
@@ -209,7 +203,6 @@ def bananas(search_space,
                                                      max_mutation_rate=max_mutation_rate,
                                                      loss=loss,
                                                      deterministic_loss=deterministic,
-                                                     noise_factor=noise_factor,
                                                      cutoff=cutoff)
 
             xcandidates = np.array([c['encoding'] for c in candidates])
@@ -276,7 +269,6 @@ def bananas(search_space,
                 arch_dict = search_space.query_arch(candidates[i]['spec'],
                                                     predictor_encoding=predictor_encoding,
                                                     deterministic=deterministic,
-                                                    noise_factor=noise_factor,
                                                     cutoff=cutoff)
                 data.append(arch_dict)
 
@@ -288,7 +280,6 @@ def bananas(search_space,
                                                 train=False,
                                                 predictor_encoding=predictor_encoding,
                                                 deterministic=deterministic,
-                                                noise_factor=noise_factor,
                                                 cutoff=cutoff)
                 encoding = np.array([full['encoding']])
                 predictions = []
@@ -321,7 +312,6 @@ def bananas(search_space,
                 arch_dict = search_space.query_arch(arch,
                                                     predictor_encoding=predictor_encoding,
                                                     deterministic=deterministic,
-                                                    noise_factor=noise_factor,
                                                     cutoff=cutoff)
                 data.append(arch_dict)
 
@@ -347,7 +337,6 @@ def local_search(search_space,
                 stop_at_minimum=True,
                 total_queries=DEFAULT_TOTAL_QUERIES,
                 deterministic=True,
-                noise_factor=1,
                 verbose=1):
     """
     local search
@@ -364,7 +353,6 @@ def local_search(search_space,
         while len(arch_dicts) < num_init:
             arch_dict = search_space.query_arch(random_encoding=random_encoding,
                                                 deterministic=deterministic,
-                                                noise_factor=noise_factor,
                                                 epochs=epochs)
 
             if search_space.get_hash(arch_dict['spec']) not in query_dict:
@@ -391,7 +379,6 @@ def local_search(search_space,
                     query_dict[search_space.get_hash(nbr)] = 1
                     nbr_dict = search_space.query_arch(nbr, 
                                                        deterministic=deterministic, 
-                                                       noise_factor=noise_factor,
                                                        epochs=epochs)
                     data.append(nbr_dict)
                     nbhd_dicts.append(nbr_dict)
@@ -429,7 +416,6 @@ def gcn_predictor(search_space,
                   random_encoding='adj',
                   cutoff=0,
                   deterministic=True,
-                  noise_factor=1,
                   verbose=1):
     """
     Implementation of Neural Predictor for Neural Architecture Search [Wen et al. 2020]
@@ -444,14 +430,12 @@ def gcn_predictor(search_space,
     # generate the training data
     data = search_space.generate_random_dataset(num=num_init, 
                                                 deterministic_loss=deterministic,
-                                                noise_factor=noise_factor,
                                                 predictor_encoding='gcn')
     xtrain = [d['encoding'] for d in data]
 
     # generate the test data
     test_data = search_space.generate_random_dataset(num=acq_size,
                                                      deterministic_loss=deterministic,
-                                                     noise_factor=noise_factor,
                                                      predictor_encoding='gcn',
                                                      train=False)
 
@@ -476,8 +460,7 @@ def gcn_predictor(search_space,
     sorted_indices = sorted(test_pred)[:k]
     for i in range(k):
         arch_dict = search_space.query_arch(test_data[i]['spec'],
-                                            deterministic=deterministic,
-                                            noise_factor=noise_factor,)
+                                            deterministic=deterministic)
         data.append(arch_dict)
 
     print('GCN predictions:', [d[loss] for d in data[-k:]])
@@ -497,7 +480,6 @@ def gp_bayesopt_search(search_space,
                        random_encoding='adj',
                        cutoff=0,
                        deterministic=True,
-                       noise_factor=1,
                        tmpdir='./temp',
                        max_iter=200,
                        mode='single_process',
@@ -517,8 +499,7 @@ def gp_bayesopt_search(search_space,
     # black-box function that bayesopt will optimize
     def fn(arch):
         return search_space.query_arch(arch, 
-                                       deterministic=deterministic, 
-                                       noise_factor=noise_factor)[loss]
+                                       deterministic=deterministic)[loss]
 
 
     # set all the parameters for the various BayesOpt classes
@@ -539,8 +520,7 @@ def gp_bayesopt_search(search_space,
     # Set up initial data
     init_data = search_space.generate_random_dataset(num=num_init, 
                                                      random_encoding=random_encoding,
-                                                     deterministic_loss=deterministic,
-                                                     noise_factor=noise_factor)
+                                                     deterministic_loss=deterministic)
     data.X = [d['spec'] for d in init_data]
     data.y = np.array([[d[loss]] for d in init_data])
 
@@ -574,7 +554,6 @@ def pybnn_search(search_space,
                  acq_opt_type='mutation',
                  explore_type='ucb',
                  deterministic=True,
-                 noise_factor=1,
                  verbose=True):
 
     import torch
@@ -584,15 +563,13 @@ def pybnn_search(search_space,
 
     def fn(arch):
         return search_space.query_arch(arch, 
-                                       deterministic=deterministic, 
-                                       noise_factor=noise_factor)[loss]
+                                       deterministic=deterministic)[loss]
 
     # set up initial data
     data = search_space.generate_random_dataset(num=num_init,
                                                 predictor_encoding=predictor_encoding,
                                                 cutoff=cutoff,
-                                                deterministic_loss=deterministic,
-                                                noise_factor=noise_factor)
+                                                deterministic_loss=deterministic)
 
     query = num_init + k
 
@@ -608,8 +585,7 @@ def pybnn_search(search_space,
                                                  acq_opt_type=acq_opt_type,
                                                  predictor_encoding=predictor_encoding, 
                                                  cutoff=cutoff,
-                                                 deterministic_loss=deterministic,
-                                                 noise_factor=noise_factor)
+                                                 deterministic_loss=deterministic)
 
         xcandidates = np.array([d['encoding'] for d in candidates])
 
@@ -636,8 +612,7 @@ def pybnn_search(search_space,
                                                 epochs=0,
                                                 predictor_encoding=predictor_encoding,
                                                 cutoff=cutoff,
-                                                deterministic=deterministic,
-                                                noise_factor=noise_factor)
+                                                deterministic=deterministic)
             data.append(arch_dict)
 
         if verbose:

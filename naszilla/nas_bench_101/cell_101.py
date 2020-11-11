@@ -309,7 +309,7 @@ class Cell101:
             print('{} is an invalid neighborhood encoding'.format(mutate_encoding))
             sys.exit()
 
-    def get_val_loss(self, nasbench, deterministic=True, patience=50, epochs=None, dataset=None, noise_factor=None):
+    def get_val_loss(self, nasbench, deterministic=True, patience=50, epochs=None, dataset=None):
         if not deterministic:
             # output one of the three validation accuracies at random
             acc = 0
@@ -332,7 +332,7 @@ class Cell101:
                     accs.append(acc)
             return round(100*(1-np.mean(accs)), 4)  
 
-    def get_test_loss(self, nasbench, patience=50, epochs=None, dataset=None, noise_factor=None):
+    def get_test_loss(self, nasbench, patience=50, epochs=None, dataset=None):
         """
         query the api until we see all three accuracies, then average them
         a few architectures only have two accuracies, so we use patience to avoid an infinite loop

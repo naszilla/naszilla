@@ -25,7 +25,6 @@ class Nasbench:
                    cutoff=0,
                    random_encoding='adj',
                    deterministic=True,
-                   noise_factor=1,
                    epochs=0,
                    random_hash=False,
                    max_edges=None,
@@ -53,11 +52,9 @@ class Nasbench:
         if train:
             arch_dict['val_loss'] = self.get_cell(arch).get_val_loss(self.nasbench, 
                                                                        deterministic=deterministic,
-                                                                       dataset=self.dataset,
-                                                                       noise_factor=noise_factor)
+                                                                       dataset=self.dataset)
             arch_dict['test_loss'] = self.get_cell(arch).get_test_loss(self.nasbench,
-                                                                         dataset=self.dataset,
-                                                                         noise_factor=noise_factor)
+                                                                         dataset=self.dataset)
             arch_dict['num_params'] = self.get_cell(arch).get_num_params(self.nasbench)
             arch_dict['val_per_param'] = (arch_dict['val_loss'] - 4.8) * (arch_dict['num_params'] ** 0.5) / 100
 
@@ -95,7 +92,6 @@ class Nasbench:
                                 predictor_encoding=None, 
                                 random_encoding='adj',
                                 deterministic_loss=True,
-                                noise_factor=1,
                                 patience_factor=5,
                                 allow_isomorphisms=False,
                                 cutoff=0,
@@ -118,7 +114,6 @@ class Nasbench:
                                         predictor_encoding=predictor_encoding,
                                         random_encoding=random_encoding,
                                         deterministic=deterministic_loss,
-                                        noise_factor=noise_factor,
                                         cutoff=cutoff,
                                         max_edges=max_edges,
                                         max_nodes=max_nodes)
@@ -141,7 +136,6 @@ class Nasbench:
                        allow_isomorphisms=False, 
                        patience_factor=5, 
                        deterministic_loss=True,
-                       noise_factor=1,
                        num_arches_to_mutate=1,
                        max_mutation_rate=1,
                        train=False,
@@ -177,7 +171,6 @@ class Nasbench:
                                                     train=train,
                                                     predictor_encoding=predictor_encoding,
                                                     deterministic=deterministic_loss,
-                                                    noise_factor=noise_factor,
                                                     cutoff=cutoff)
                         h = self.get_hash(mutated)
 
@@ -192,7 +185,6 @@ class Nasbench:
                     break
 
                 arch_dict = self.query_arch(train=train, 
-                                            noise_factor=noise_factor,
                                             predictor_encoding=predictor_encoding,
                                             cutoff=cutoff)
                 h = self.get_hash(arch_dict['spec'])
