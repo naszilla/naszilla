@@ -1,6 +1,6 @@
 <p align="center"><img src="img/naszilla_banner.png" width=700 /></p>
 
-[![MIT licensed](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE.md)
 
 A repository to compare many popular NAS algorithms seamlessly across three popular benchmarks (NASBench 101, 201, and 301). You can implement your own NAS algorithm, and then easily compare it with ten algorithms across three benchmarks.
 
