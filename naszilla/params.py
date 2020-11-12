@@ -19,14 +19,12 @@ def algo_params(param_str, queries=150):
         params.append({'algo_name':'random', 'total_queries':queries})
         params.append({'algo_name':'evolution', 'total_queries':queries})
         params.append({'algo_name':'local_search', 'total_queries':queries})
-        params.append({'algo_name':'gp_bayesopt', 'total_queries':queries})
-        params.append({'algo_name':'gp_bayesopt', 'total_queries':queries, 'distance':'nasbot'})
+
         params.append({'algo_name':'dngo', 'total_queries':queries})
         params.append({'algo_name':'bohamiann', 'total_queries':queries})
         params.append({'algo_name':'bonas', 'total_queries':queries})   
         params.append({'algo_name':'gcn_predictor', 'total_queries':queries})   
-        params.append({'algo_name':'vaenas', 'total_queries':queries})   
-        
+                
     elif param_str == 'local_search_variants':
         params.append({'algo_name':'local_search', 'total_queries':queries})
         params.append({'algo_name':'local_search', 'total_queries':queries, 'stop_at_minimum':False})
@@ -34,9 +32,9 @@ def algo_params(param_str, queries=150):
         params.append({'algo_name':'local_search', 'total_queries':queries, 'query_full_nbhd':True, 'stop_at_minimum':False})
 
     else:
-        print('invalid algorithm params: {}'.format(param_str))
-        sys.exit()
-
+        print('Invalid algorithm params: {}'.format(param_str))
+        raise NotImplementedError()
+        
     print('\n* Running experiment: ' + param_str)
     return params
 
@@ -67,7 +65,7 @@ def meta_neuralnet_params(param_str):
         params = {'ensemble_params':ensemble_params}
 
     else:
-        print('invalid meta neural net params: {}'.format(param_str))
-        sys.exit()
+        print('Invalid meta neural net params: {}'.format(param_str))
+        raise NotImplementedError()
 
     return params

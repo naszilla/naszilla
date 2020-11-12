@@ -48,9 +48,9 @@ def run_nas_algorithm(algo_params, search_space, mp):
     elif algo_name == 'gcn_predictor':
         data = gcn_predictor(search_space, **ps)
     else:
-        print('invalid algorithm name')
-        sys.exit()
-
+        print('Invalid algorithm name')
+        raise NotImplementedError()
+    
     if 'k' not in ps:
         ps['k'] = DEFAULT_K
     if 'total_queries' not in ps:

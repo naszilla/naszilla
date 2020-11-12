@@ -274,7 +274,7 @@ class Cell301:
                          shuffle=True):
         if mutate_encoding != 'adj':
             print('{} is not yet implemented as a neighborhood for nasbench301'.format(mutate_encoding))
-            sys.exit()
+            raise NotImplementedError()
 
         op_nbhd = []
         edge_nbhd = []
