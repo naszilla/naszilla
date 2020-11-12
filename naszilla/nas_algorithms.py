@@ -13,7 +13,6 @@ from meta_neural_net import MetaNeuralnet
 from bo.bo.probo import ProBO
 from gcn.model import NeuralPredictor
 from gcn.train_gcn import fit, predict
-#from vae.train import run_vae
 
 # default parameters for the NAS algorithms
 DEFAULT_NUM_INIT = 10
@@ -211,9 +210,6 @@ def bananas(search_space,
         train_error = 0
         ensemble = []
 
-        #print('shape', xcandidates.shape)
-        #print('zero', xcandidates[0])
-
         for e in range(num_ensemble):
 
             if predictor == 'bananas':
@@ -228,15 +224,26 @@ def bananas(search_space,
                 tf.compat.v1.reset_default_graph()
 
             elif predictor == 'gcn':
+                """
+                Unofficial implementation of BONAS [Shi et al. 2019].
+                We used the same BO code as in BANANAS to allow for better comparisons between
+                the GCN-based neural predictor and the path-based neural predictor.
+                After this code was written, an official implementation of BONAS was released
+                at this url: https://github.com/pipilurj/BONAS
+                """
+                
                 # train GCN and then make predictions on the test data
-                if search_space.get_type() == 'nasbench':
+                if search_space.get_type() == 'nasbench_101':
                     # initial_hidden == num_op_choices + 2
                     initial_hidden = 5
-                else:
+                elif search_space.get_type() == 'nasbench_201':
                     initial_hidden = 7
+                else:
+                    print('gcn predictor is currently not supported for {}'.format(search_space.get_type()))
 
                 net = NeuralPredictor(initial_hidden=initial_hidden)
-                fit(net, xtrain, seed=np.random.choice(10000))
+                seed = np.random.choice(10000)
+                fit(net, xtrain, seed=seed)
                 candidate_predictions.append(predict(net, xcandidates))
 
                 # clear memory
@@ -244,7 +251,13 @@ def bananas(search_space,
                 gc.collect()
 
             elif predictor == 'vae':
-                candidate_predictions.append(run_vae(xtrain, xcandidates, seed=np.random.choice(10000)))
+                """
+                Note: vae requires installing additional dependencies
+                """
+                
+                from vae.train import run_vae
+                seed = np.random.choice(10000)
+                candidate_predictions.append(run_vae(xtrain, xcandidates, seed=seed))
                 gc.collect()
 
             else:
@@ -255,7 +268,6 @@ def bananas(search_space,
             print('query {}, Neural predictor train error: {}'.format(query, train_error))
 
         # compute the acquisition function for all the candidate architectures
-        print('cand shape', np.array(candidate_predictions).shape)
         candidate_indices = acq_fn(candidate_predictions, ytrain=ytrain, explore_type=explore_type)
 
         # add the k arches with the minimum acquisition function values
@@ -320,8 +332,6 @@ def local_search(search_space,
 
         while True:
             # loop over iterations of local search until we hit a local minimum
-            if False:
-                print('starting iteration, query', query)
             iter_dict[search_space.get_hash(arch_dict['spec'])] = 1
             nbhd = search_space.get_nbhd(arch_dict['spec'], mutate_encoding=mutate_encoding)
             improvement = False
@@ -393,17 +403,19 @@ def gcn_predictor(search_space,
 
     test_data = search_space.remove_duplicates(test_data, data)
     xtest = [d['encoding'] for d in test_data]
-
-    # train the neural network
-
-    if search_space.get_type() == 'nasbench':
+     
+    if search_space.get_type() == 'nasbench_101':
         # initial_hidden == num_op_choices + 2
         initial_hidden = 5
-    else:
+    elif search_space.get_type() == 'nasbench_201':
         initial_hidden = 7
-
+    else:
+        print('gcn predictor is currently not supported for {}'.format(search_space.get_type()))
+        
+    # train the neural network   
     net = NeuralPredictor(initial_hidden=initial_hidden)
-    fit(net, xtrain, seed=np.random.choice(10000))
+    seed = np.random.choice(10000)
+    fit(net, xtrain, seed=seed)
 
     # make predictions on the test data
     test_pred = predict(net, xtest)
@@ -414,8 +426,6 @@ def gcn_predictor(search_space,
         arch_dict = search_space.query_arch(test_data[i]['spec'],
                                             deterministic=deterministic)
         data.append(arch_dict)
-
-    print('GCN predictions:', [d[loss] for d in data[-k:]])
 
     if verbose:
         top_5_loss = sorted([d[loss] for d in data])[:min(5, len(data))]

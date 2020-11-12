@@ -58,11 +58,16 @@ class MyGpDistmatPP(DiscPP):
   def get_distmat(self, xmat1, xmat2):
     """ Get distance matrix """
     #return squared_euc_distmat(xmat1, xmat2, .5)
-    
-    from data import Data
-    self.distmat = Data.generate_distance_matrix
-    #print('distmat')
-    #print(self.distmat(xmat1, xmat2, self.modelp.distance))
+    search_space = self.modelp.search_space
+    if search_space == 'nasbench_101':
+        from nas_benchmarks import Nasbench101 as NB
+    elif search_space == 'nasbench_201':
+        from nas_benchmarks import Nasbench201 as NB
+    elif search_space == 'nasbench_301':
+        from nas_benchmarks import Nasbench301 as NB
+        
+    self.distmat = NB.generate_distance_matrix
+
     return self.distmat(xmat1, xmat2, self.modelp.distance)
 
   def print_inference_result(self):

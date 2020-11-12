@@ -303,7 +303,8 @@ class Nasbench101(Nasbench):
         else:
             self.nasbench = api.NASBench(os.path.expanduser(data_folder + 'nasbench_full.tfrecord'))
 
-    def get_cell(self, arch=None):
+    @classmethod
+    def get_cell(cls, arch=None):
         if not arch:
             return Cell101
         else:
@@ -355,7 +356,8 @@ class Nasbench201(Nasbench):
     def get_type(self):
         return 'nasbench_201'
 
-    def get_cell(self, arch=None):
+    @classmethod
+    def get_cell(cls, arch=None):
         if not arch:
             return Cell201
         else:
@@ -386,7 +388,8 @@ class Nasbench301(Nasbench):
     def get_type(self):
         return 'nasbench_301'
 
-    def get_cell(self, arch=None):
+    @classmethod
+    def get_cell(cls, arch=None):
         if not arch:
             return Cell301
         else:
