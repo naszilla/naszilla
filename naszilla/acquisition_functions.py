@@ -64,7 +64,7 @@ def acq_fn(predictions, ytrain=None, stds=None, explore_type='its'):
         sorted_indices = np.argsort(samples)
 
     else:
-        print('Invalid exploration type in meta neuralnet search', explore_type)
-        sys.exit()
+        print('{} is not a valid exploration type'.format(explore_type))
+        raise NotImplementedError()
 
     return sorted_indices

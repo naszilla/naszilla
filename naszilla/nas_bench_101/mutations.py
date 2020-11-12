@@ -151,8 +151,9 @@ def path_mutate(nasbench,
     https://drive.google.com/file/d/1yMRFxT6u3ZyfiWUPhtQ_B9FbuGN3X-Nf/view?usp=sharing
     """
     if not index_hash:
-        print('Error in nas_bench_101/mutations.py. Please download index_hash')
-        sys.exit()
+        print('Error: please download index_hash, located at \
+        https://drive.google.com/file/d/1yMRFxT6u3ZyfiWUPhtQ_B9FbuGN3X-Nf/view?usp=sharing')
+        raise NotImplementedError()
 
     total_paths = sum([len(OPS) ** i for i in range(OP_SPOTS + 1)])
     if not cutoff:

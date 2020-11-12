@@ -6,9 +6,6 @@ import sys
 import pickle
 from collections import namedtuple
 
-import sys
-import os
-sys.path.append('../nasbench301')
 import nasbench301 as nb
 
 OPS = ['max_pool_3x3',
@@ -90,7 +87,7 @@ class Cell301:
         else:
             print('{} is not yet implemented as a predictor encoding \
              for nasbench301'.format(predictor_encoding))
-            sys.exit()
+            raise NotImplementedError()
 
     def distance(self, other, dist_type, cutoff=None):
 
@@ -100,7 +97,7 @@ class Cell301:
             return np.sum(np.array(self.encode_adj() != np.array(other.encode_adj())))
         else:
             print('{} is not yet implemented as a distance for nasbench301'.format(dist_type))
-            sys.exit()
+            raise NotImplementedError()
 
     def mutate(self, 
                nasbench,
@@ -115,7 +112,7 @@ class Cell301:
         if mutate_encoding != 'adj':
             print('{} is not yet implemented as a mutation \
                 encoding for nasbench301'.format(mutate_encoding))
-            sys.exit()
+            raise NotImplementedError()
 
         """ mutate a single arch """
         # first convert tuple to array so that it is mutable
@@ -153,7 +150,7 @@ class Cell301:
         if random_encoding != 'adj':
             print('{} is not yet implemented as a mutation \
                 encoding for nasbench301'.format(random_encoding))
-            sys.exit()
+            raise NotImplementedError()
 
         normal = []
         reduction = []

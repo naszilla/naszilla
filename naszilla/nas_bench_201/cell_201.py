@@ -57,6 +57,9 @@ class Cell201:
             return self.encode_freq_paths(cutoff=cutoff)
         elif predictor_encoding == 'gcn':
             return self.gcn_encoding(nasbench, deterministic=deterministic)
+        else:
+            print('{} is an invalid predictor encoding'.format(predictor_encoding))
+            raise NotImplementedError()
 
     def gcn_encoding(self, nasbench, deterministic):
 
@@ -212,6 +215,9 @@ class Cell201:
 
             new_arch = {'string':self.get_string_from_ops(new_ops)}
             return {'string':self.get_string_from_ops(new_ops)}
+        else:
+            print('{} is an invalid mutate encoding'.format(mutate_encoding))
+            raise NotImplementedError()
 
     def encode_standard(self):
         """ 
@@ -302,7 +308,7 @@ class Cell201:
             distance = nasbot_distance(self, other)
         else:
             print('{} is an invalid distance'.format(distance))
-            sys.exit()
+            raise NotImplementedError()
         return distance
 
 
@@ -345,6 +351,9 @@ class Cell201:
                         if not same:
                             new_arch = {'string':self.get_string_from_ops(new_ops)}
                             nbhd.append(new_arch)
+        else:
+            print('{} is an invalid mutate encoding'.format(mutate_encoding))
+            raise NotImplementedError()
 
         if shuffle:
             random.shuffle(nbhd)                

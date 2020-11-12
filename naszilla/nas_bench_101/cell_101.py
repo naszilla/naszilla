@@ -2,7 +2,6 @@ import numpy as np
 import copy
 import itertools
 import random
-import sys
 import pickle
 
 from nasbench import api
@@ -152,7 +151,7 @@ class Cell101:
             return self.vae_encoding(nasbench, deterministic=deterministic)
         else:
             print('{} is an invalid predictor encoding'.format(predictor_encoding))
-            sys.exit()
+            raise NotImplementedError()
 
     def gcn_encoding(self, nasbench, deterministic):
 
@@ -214,7 +213,7 @@ class Cell101:
             return nasbot_distance(self, other)
         else:
             print('{} is an invalid distance'.format(dist_type))
-            sys.exit()
+            raise NotImplementedError()
 
     def mutate(self, 
                nasbench,
@@ -285,7 +284,7 @@ class Cell101:
                                     cutoff=cutoff)
         else:
             print('{} is an invalid random encoding'.format(random_encoding))
-            sys.exit()
+            raise NotImplementedError()
 
     def get_neighborhood(self,
                          nasbench, 
@@ -307,7 +306,7 @@ class Cell101:
                                           shuffle=shuffle)
         else:
             print('{} is an invalid neighborhood encoding'.format(mutate_encoding))
-            sys.exit()
+            raise NotImplementedError()
 
     def get_val_loss(self, nasbench, deterministic=True, patience=50, epochs=None, dataset=None):
         if not deterministic:
@@ -461,8 +460,10 @@ class Cell101:
         https://drive.google.com/file/d/1yMRFxT6u3ZyfiWUPhtQ_B9FbuGN3X-Nf/view?usp=sharing
         """
         if not index_hash:
-            print('Error in nas_bench_101/cell_101.py. Please download index_hash')
-            sys.exit()
+            print('Error: please download index_hash, located at \
+            https://drive.google.com/file/d/1yMRFxT6u3ZyfiWUPhtQ_B9FbuGN3X-Nf/view?usp=sharing')
+            raise NotImplementedError()
+            
         nbhd = []
         path_indices = self.get_path_indices()
         total_paths = sum([len(OPS) ** i for i in range(OP_SPOTS + 1)])

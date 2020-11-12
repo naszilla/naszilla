@@ -4,7 +4,7 @@ Make a point in a domain, and serialize it.
 
 import sys
 import os
-sys.path.append(os.path.expanduser('./'))
+#sys.path.append(os.path.expanduser('./'))
 from argparse import Namespace, ArgumentParser
 import pickle
 import time

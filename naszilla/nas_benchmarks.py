@@ -137,9 +137,9 @@ class Nasbench:
             h = self.get_hash(arch)
             dic[h] = 1
 
-        if acq_opt_type in ['local_search', 'evolution']:
-            print('This acq_opt_type is not yet implemented')
-            sys.exit()
+        if acq_opt_type not in ['mutation', 'mutation_random', 'random']:
+            print('{} is not yet implemented as an acquisition type'.format(acq_opt_type))
+            raise NotImplementedError()
 
         if acq_opt_type in ['mutation', 'mutation_random']:
             # mutate architectures with the lowest loss
