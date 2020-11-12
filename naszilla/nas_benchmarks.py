@@ -3,15 +3,14 @@ import pickle
 import sys
 import os
 
-# todo check if it works to import these within each data class
 from nasbench import api
 from nas_201_api import NASBench201API as API
-sys.path.append('../nasbench301')
-#import nasbench301 as nb
+import nasbench301 as nb
 
 from nas_bench_101.cell_101 import Cell101
 from nas_bench_201.cell_201 import Cell201
-#from nas_bench_301.cell_301 import Cell301
+from nas_bench_301.cell_301 import Cell301
+
 
 class Nasbench:
 
@@ -57,20 +56,6 @@ class Nasbench:
                                                                          dataset=self.dataset)
             arch_dict['num_params'] = self.get_cell(arch).get_num_params(self.nasbench)
             arch_dict['val_per_param'] = (arch_dict['val_loss'] - 4.8) * (arch_dict['num_params'] ** 0.5) / 100
-
-            if self.get_type() == 'nasbench_101':
-                arch_dict['dist_to_min'] = arch_dict['val_loss'] - 4.94457682
-            elif self.get_type() == 'nasbench_301':
-                arch_dict['dist_to_min'] = arch_dict['val_loss'] - 4
-            elif self.dataset == 'cifar10':
-                arch_dict['dist_to_min'] = arch_dict['val_loss'] - 8.3933
-            elif self.dataset == 'cifar100':
-                arch_dict['dist_to_min'] = arch_dict['val_loss'] - 26.5067
-            elif self.dataset in ['ImageNet16-120', 'imagenet']:
-                arch_dict['dist_to_min'] = arch_dict['val_loss'] - 53.2333
-            else:
-                print('invalid search space / dataset in data.py')
-                sys.exit()
 
         return arch_dict
 
@@ -289,7 +274,7 @@ class Nasbench:
         matrix = np.zeros([len(arches_1), len(arches_2)])
         for i, arch_1 in enumerate(arches_1):
             for j, arch_2 in enumerate(arches_2):
-                matrix[i][j] = self.get_cell(arch_1).distance(self.get_cell(arch_2), dist_type=distance)
+                matrix[i][j] = cls.get_cell(arch_1).distance(cls.get_cell(arch_2), dist_type=distance)
         return matrix
 
 
@@ -363,9 +348,9 @@ class Nasbench201(Nasbench):
         self.index_hash = None
 
         if version == '1_0':
-            self.nasbench = API(os.path.expanduser(nas_benchmarks_folder + 'NAS-Bench-201-v1_0-e61699.pth'))
+            self.nasbench = API(os.path.expanduser(data_folder + 'NAS-Bench-201-v1_0-e61699.pth'))
         elif version == '1_1':
-            self.nasbench = API(os.path.expanduser(nas_benchmarks_folder + 'NAS-Bench-201-v1_1-096897.pth'))
+            self.nasbench = API(os.path.expanduser(data_folder + 'NAS-Bench-201-v1_1-096897.pth'))
 
     def get_type(self):
         return 'nasbench_201'
@@ -386,12 +371,14 @@ class Nasbench201(Nasbench):
 
 class Nasbench301(Nasbench):
 
-    def __init__(self):
+    def __init__(self,
+                 data_folder='~/nas_benchmark_datasets/'
+                ):
         self.dataset = 'cifar10'
         self.search_space = 'nasbench_301'
-        ensemble_dir_performance = os.path.expanduser('~/nasbench301/nasbench301_models_v0.9/xgb_v0.9')
+        ensemble_dir_performance = os.path.expanduser(data_folder + 'nasbench301_models_v0.9/xgb_v0.9')
         performance_model = nb.load_ensemble(ensemble_dir_performance)
-        ensemble_dir_runtime = os.path.expanduser('~/nasbench301/nasbench301_models_v0.9/lgb_runtime_v0.9')
+        ensemble_dir_runtime = os.path.expanduser(data_folder + 'nasbench301_models_v0.9/lgb_runtime_v0.9')
         runtime_model = nb.load_ensemble(ensemble_dir_runtime)
         self.nasbench = [performance_model, runtime_model] 
         self.index_hash = None
