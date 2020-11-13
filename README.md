@@ -86,9 +86,9 @@ algorithms** on **three benchmark search spaces**!
 You can test the installation of the benchmarks by running these commands:
 ```bash
 cd naszilla
-python naszilla/run_experiments.py --search_space nasbench_101 --queries 30 --trials 1
-python naszilla/run_experiments.py --search_space nasbench_201 --queries 30 --trials 1
-python naszilla/run_experiments.py --search_space nasbench_301 --queries 30 --trials 1
+python naszilla/run_experiments.py --search_space nasbench_101 --algo_params all_algos --queries 30 --trials 1
+python naszilla/run_experiments.py --search_space nasbench_201 --algo_params all_algos --queries 30 --trials 1
+python naszilla/run_experiments.py --search_space nasbench_301 --algo_params all_algos --queries 30 --trials 1
 ```
 
 ## Run NAS experiments on NASBench-101/201/301 search spaces
@@ -97,8 +97,9 @@ python naszilla/run_experiments.py --search_space nasbench_301 --queries 30 --tr
 cd naszilla
 python naszilla/run_experiments.py --search_space nasbench_201 --dataset cifar100 --queries 100 --trials 100
 ```
-This will test several NAS algorithms against each other on the NASBench-101 search
-space.  To customize your experiment, open `params.py`. Here, you can change the
+This will test several NAS algorithms against each other on the NASBench-201 search
+space. Note that NASBench-201 allows you to specify one of three datasets: cifar10, cifar100, or imagenet. 
+To customize your experiment, open `params.py`. Here, you can change the
 algorithms and their hyperparameters. For details on running specific methods,
 see [these docs](docs/naszilla.md).
 
