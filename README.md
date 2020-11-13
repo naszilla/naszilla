@@ -39,14 +39,14 @@ cd naszilla
 pip install -r requirements.txt
 cd ..
 ```
-Next, install nasbench
+Next, install [nasbench101](https://github.com/google-research/nasbench)
 ```
 git clone https://github.com/google-research/nasbench
 cd nasbench
 pip install -e .
 cd ..
 ```
-Next, install nasbench301 (currently the pip version has an error)
+Next, install [nasbench301](https://github.com/automl/nasbench301) (currently the pip version has an error)
 ```
 git clone https://github.com/automl/nasbench301
 cd nasbench301
@@ -54,6 +54,9 @@ cat requirements.txt | xargs -n 1 -L 1 pip install
 export PYTHONPATH="${PYTHONPATH}:$PWD"
 cd ..
 ```
+You might need to replace line 32 of `nasbench301/surrogate_models/surrogate_models.py` with a new path to the configspace file:
+`self.config_loader = utils.ConfigLoader(os.path.expanduser('~/nasbench301/configspace.json'))`
+
 Finally, download the nas benchmark datasets (either with the terminal commands below, or from their respective websites ([nasbench101](https://github.com/google-research/nasbench), [nasbench201](https://github.com/D-X-Y/NAS-Bench-201), and [nasbench301](https://github.com/automl/nasbench301)).
 ```
 # these files are 0.5GB, 2.1GB, and 1.6GB, respectively
