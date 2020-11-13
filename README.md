@@ -2,9 +2,12 @@
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE.md)
 
-A repository to compare many popular NAS algorithms seamlessly across three popular benchmarks (NASBench 101, 201, and 301). You can implement your own NAS algorithm, and then easily compare it with ten algorithms across three benchmarks.
+A repository to compare many popular NAS algorithms seamlessly across three popular
+benchmarks (NASBench 101, 201, and 301). You can implement your own NAS algorithm, and
+then easily compare it with eleven algorithms across three benchmarks.
 
-This repository contains the official code for the following three papers, including a [NeurIPS2020 spotlight](https://arxiv.org/abs/2007.04965) paper:
+This repository contains the official code for the following three papers, including a
+[NeurIPS2020 spotlight](https://arxiv.org/abs/2007.04965) paper:
 
 <table>
  <tbody>
@@ -39,6 +42,8 @@ cd naszilla
 pip install -e .
 cd ..
 ```
+
+### Installing NASBench-101/201/301
 Next, install [nasbench101](https://github.com/google-research/nasbench):
 ```bash
 git clone https://github.com/google-research/nasbench
@@ -46,7 +51,8 @@ cd nasbench
 pip install -e .
 cd ..
 ```
-Next, install [nasbench301](https://github.com/automl/nasbench301) (currently the pip version has an error):
+Next, install [nasbench301](https://github.com/automl/nasbench301) (currently the pip
+version has an error):
 ```bash
 git clone https://github.com/automl/nasbench301
 cd nasbench301
@@ -54,12 +60,17 @@ cat requirements.txt | xargs -n 1 -L 1 pip install
 export PYTHONPATH="${PYTHONPATH}:$PWD"
 cd ..
 ```
-You might need to replace line 32 of `nasbench301/surrogate_models/surrogate_models.py` with a new path to the configspace file:
+You might need to replace line 32 of `nasbench301/surrogate_models/surrogate_models.py`
+with a new path to the configspace file:
 ```python
 self.config_loader = utils.ConfigLoader(os.path.expanduser('~/nasbench301/configspace.json'))
 ```
 
-Finally, download the nas benchmark datasets (either with the terminal commands below, or from their respective websites ([nasbench101](https://github.com/google-research/nasbench), [nasbench201](https://github.com/D-X-Y/NAS-Bench-201), and [nasbench301](https://github.com/automl/nasbench301)).
+Finally, download the nas benchmark datasets (either with the terminal commands below,
+or from their respective websites
+([nasbench101](https://github.com/google-research/nasbench),
+[nasbench201](https://github.com/D-X-Y/NAS-Bench-201), and
+[nasbench301](https://github.com/automl/nasbench301)).
 ```bash
 # these files are 0.5GB, 2.1GB, and 1.6GB, respectively
 wget https://storage.googleapis.com/nasbench/nasbench_only108.tfrecord
@@ -68,7 +79,8 @@ unzip nasbench301_models_v0.9.zip
 gdrive download 16Y0UwGisiouVRxW-W5hEtbxmcHw_0hF_
 # place all of them in one folder, e.g., ~/nas_benchmark_datasets
 ```
-Now you have successfully installed all of the requirements to run eleven NAS algorithms on three benchmark search spaces!
+Now you have successfully installed all of the requirements to run **eleven NAS
+algorithms** on **three benchmark search spaces**!
 
 ## Run NAS experiments on NASBench-101/201/301 search spaces
 
