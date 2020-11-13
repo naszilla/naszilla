@@ -42,9 +42,10 @@ cd naszilla
 pip install -e .
 cd ..
 ```
-
-### Installing NASBench-101/201/301
-Next, install [nasbench101](https://github.com/google-research/nasbench):
+The previous commands will have installed nas-bench-201 automatically, but 101 and 301 
+need to be installed manually.
+### Installing NASBench-101/301
+Now install [nasbench101](https://github.com/google-research/nasbench):
 ```bash
 git clone https://github.com/google-research/nasbench
 cd nasbench
