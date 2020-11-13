@@ -36,7 +36,7 @@ First clone this repository and install its requirements:
 ```bash
 git clone https://github.com/naszilla/naszilla
 cd naszilla
-pip install -r requirements.txt
+pip install -e .
 cd ..
 ```
 Next, install [nasbench101](https://github.com/google-research/nasbench):
