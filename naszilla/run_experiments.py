@@ -109,7 +109,7 @@ if __name__ == "__main__":
     parser.add_argument('--dataset', type=str, default='cifar10', help='cifar10, 100, or imagenet (for nasbench201)')
     parser.add_argument('--mf', type=bool, default=False, help='Multi fidelity: true or false (for nasbench101)')
     parser.add_argument('--metann_params', type=str, default='standard', help='which parameters to use')
-    parser.add_argument('--algo_params', type=str, default='fast_algos', help='which parameters to use')
+    parser.add_argument('--algo_params', type=str, default='simple_algos', help='which parameters to use')
     parser.add_argument('--output_filename', type=str, default='round', help='name of output files')
     parser.add_argument('--save_dir', type=str, default='results_output', help='name of save directory')
     parser.add_argument('--save_specs', type=bool, default=False, help='save the architecture specs')    

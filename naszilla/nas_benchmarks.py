@@ -378,9 +378,9 @@ class Nasbench301(Nasbench):
                 ):
         self.dataset = 'cifar10'
         self.search_space = 'nasbench_301'
-        ensemble_dir_performance = os.path.expanduser(data_folder + 'nasbench301_models_v0.9/xgb_v0.9')
+        ensemble_dir_performance = os.path.expanduser(data_folder + 'nb_models/xgb_v0.9')
         performance_model = nb.load_ensemble(ensemble_dir_performance)
-        ensemble_dir_runtime = os.path.expanduser(data_folder + 'nasbench301_models_v0.9/lgb_runtime_v0.9')
+        ensemble_dir_runtime = os.path.expanduser(data_folder + 'nb_models/lgb_runtime_v0.9')
         runtime_model = nb.load_ensemble(ensemble_dir_runtime)
         self.nasbench = [performance_model, runtime_model] 
         self.index_hash = None

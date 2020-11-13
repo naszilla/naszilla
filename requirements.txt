@@ -1,0 +1,6 @@
+tensorflow-gpu==1.14.0
+tensorflow==1.14.0
+torch==1.5.0
+torchvision==0.6.0
+nas-bench-201==1.3
+pybnn
