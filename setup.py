@@ -1,13 +1,8 @@
 from setuptools import setup, find_packages
 
-requirements = []
-with open('requirements.txt', 'r') as f:
-    for line in f:
-        requirements.append(line.strip())
-
 setup(
     name = 'naszilla',
-    version = '1.0',
+    version = '1.0.1',
     author = 'Colin White, Willie Neiswanger',
     author_email = 'crwhite@cs.cmu.edu',
     description = 'python framework for NAS algorithms on benchmark search spaces',
@@ -20,5 +15,12 @@ setup(
         "Programming Language :: Python :: 3",
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
     ],
-    install_requires = requirements
+    install_requires = [
+        'tensorflow-gpu==1.14.0',
+        'tensorflow==1.14.0',
+        'torch==1.5.0',
+        'torchvision==0.6.0',
+        'nas-bench-201==1.3',
+        'pybnn'
+    ]
 )

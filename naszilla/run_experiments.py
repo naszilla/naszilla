@@ -35,6 +35,9 @@ def run_experiments(args, save_dir):
         search_space = Nasbench201(dataset=dataset)
     elif ss == 'nasbench_301':
         search_space = Nasbench301()
+    else:
+        print('Invalid search space')
+        raise NotImplementedError()
 
     for i in range(trials):
         results = []
