@@ -32,21 +32,21 @@ This repository contains the official code for the following three papers, inclu
 </table>
 
 ## Installation
-First clone this repository and install its requirements
+First clone this repository and install its requirements:
 ```
 git clone https://github.com/naszilla/naszilla
 cd naszilla
 pip install -r requirements.txt
 cd ..
 ```
-Next, install [nasbench101](https://github.com/google-research/nasbench)
+Next, install [nasbench101](https://github.com/google-research/nasbench):
 ```
 git clone https://github.com/google-research/nasbench
 cd nasbench
 pip install -e .
 cd ..
 ```
-Next, install [nasbench301](https://github.com/automl/nasbench301) (currently the pip version has an error)
+Next, install [nasbench301](https://github.com/automl/nasbench301) (currently the pip version has an error):
 ```
 git clone https://github.com/automl/nasbench301
 cd nasbench301
