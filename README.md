@@ -83,11 +83,19 @@ gdrive download 16Y0UwGisiouVRxW-W5hEtbxmcHw_0hF_
 Now you have successfully installed all of the requirements to run **eleven NAS
 algorithms** on **three benchmark search spaces**!
 
+You can test the installation of the benchmarks by running these commands:
+```bash
+cd naszilla
+python naszilla/run_experiments.py --search_space nasbench_101 --queries 30 --trials 1
+python naszilla/run_experiments.py --search_space nasbench_201 --queries 30 --trials 1
+python naszilla/run_experiments.py --search_space nasbench_301 --queries 30 --trials 1
+```
+
 ## Run NAS experiments on NASBench-101/201/301 search spaces
 
 ```bash
 cd naszilla
-python naszilla/run_experiments.py --search_space nasbench_101 --queries 100 --trials 10
+python naszilla/run_experiments.py --search_space nasbench_201 --dataset cifar100 --queries 100 --trials 100
 ```
 This will test several NAS algorithms against each other on the NASBench-101 search
 space.  To customize your experiment, open `params.py`. Here, you can change the
