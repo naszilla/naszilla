@@ -35,8 +35,6 @@ def run_nas_algorithm(algo_params, search_space, mp):
         data = bananas(search_space, mp, **ps, predictor='bananas')
     elif algo_name == 'bonas':
         data = bananas(search_space, mp, **ps, predictor='gcn', predictor_encoding='gcn')
-    elif algo_name == 'vaenas':
-        data = bananas(search_space, mp, **ps, predictor='vae', predictor_encoding='vae')
     elif algo_name == 'gp_bayesopt':
         data = gp_bayesopt_search(search_space, **ps)
     elif algo_name == 'dngo':
@@ -47,6 +45,10 @@ def run_nas_algorithm(algo_params, search_space, mp):
         data = local_search(search_space, **ps)
     elif algo_name == 'gcn_predictor':
         data = gcn_predictor(search_space, **ps)
+    elif algo_name == 'vaenas':
+        #data = bananas(search_space, mp, **ps, predictor='vae', predictor_encoding='vae')
+        print('Currently not implemented')
+        raise NotImplementedError()
     else:
         print('Invalid algorithm name')
         raise NotImplementedError()
