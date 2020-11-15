@@ -21,27 +21,27 @@ setup(
         'torch==1.5.0',
         'torchvision==0.6.0',
         'nas-bench-201==1.3',
-        'pybnn'
-        'autograd>=1.3'
-        'click'
-        'Cython'
-        'ConfigSpace==0.4.12'
-        'ipython'
-        'lightgbm>=2.3.1'
-        'matplotlib'
-        'numpy'
-        'pandas'
-        'pathvalidate'
-        'Pillow>=7.1.2'
-        'psutil'
-        'scikit-image'
-        'scikit-learn>=0.23.1'
-        'scipy'
-        'seaborn'
-        'statsmodels'
-        'tensorboard==1.14.0'
-        'tensorflow-estimator'
-        'tqdm'
+        'pybnn',
+        'autograd>=1.3',
+        'click',
+        'Cython',
+        'ConfigSpace==0.4.12',
+        'ipython',
+        'lightgbm>=2.3.1',
+        'matplotlib',
+        'numpy',
+        'pandas',
+        'pathvalidate',
+        'Pillow>=7.1.2',
+        'psutil',
+        'scikit-image',
+        'scikit-learn>=0.23.1',
+        'scipy',
+        'seaborn',
+        'statsmodels',
+        'tensorboard==1.14.0',
+        'tensorflow-estimator',
+        'tqdm',
         'xgboost'
     ]
 )
