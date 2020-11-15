@@ -7,11 +7,12 @@ import time
 import copy
 import numpy as np
 from scipy.spatial.distance import cdist 
-from bo.pp.pp_core import DiscPP
-from bo.pp.gp.gp_utils import kern_exp_quad, kern_matern32, \
+
+from naszilla.bo.pp.pp_core import DiscPP
+from naszilla.bo.pp.gp.gp_utils import kern_exp_quad, kern_matern32, \
   get_cholesky_decomp, solve_upper_triangular, solve_lower_triangular, \
   sample_mvn, squared_euc_distmat, kern_distmat
-from bo.util.print_utils import suppress_stdout_stderr
+from naszilla.bo.util.print_utils import suppress_stdout_stderr
 
 
 class MyGpDistmatPP(DiscPP):

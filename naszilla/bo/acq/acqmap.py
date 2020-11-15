@@ -5,11 +5,10 @@ Classes to manage acqmap (acquisition maps from xin to acquisition value).
 from argparse import Namespace
 import numpy as np
 import copy
-from bo.acq.acquisition import Acquisitioner
-from bo.util.datatransform import DataTransformer
-#from bo.pp.pp_gp_george import GeorgeGpPP
-#from bo.pp.pp_gp_stan import StanGpPP
-from bo.pp.pp_gp_my_distmat import MyGpDistmatPP
+
+from naszilla.bo.acq.acquisition import Acquisitioner
+from naszilla.bo.util.datatransform import DataTransformer
+from naszilla.bo.pp.pp_gp_my_distmat import MyGpDistmatPP
 
 class AcqMapper(object):
   """ Class to manage acqmap (acquisition map). """

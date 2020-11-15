@@ -6,14 +6,15 @@ from argparse import Namespace
 import time
 import numpy as np
 import copy
-from bo.pp.pp_core import DiscPP
-import bo.pp.stan.gp_hier2 as gpstan2
-import bo.pp.stan.gp_hier3 as gpstan3
-import bo.pp.stan.gp_hier2_matern as gpstan2_matern
-from bo.pp.gp.gp_utils import kern_exp_quad, kern_matern32, \
+
+from naszilla.bo.pp.pp_core import DiscPP
+import naszilla.bo.pp.stan.gp_hier2 as gpstan2
+import naszilla.bo.pp.stan.gp_hier3 as gpstan3
+import naszilla.bo.pp.stan.gp_hier2_matern as gpstan2_matern
+from naszilla.bo.pp.gp.gp_utils import kern_exp_quad, kern_matern32, \
   get_cholesky_decomp, solve_upper_triangular, solve_lower_triangular, \
   sample_mvn
-from bo.util.print_utils import suppress_stdout_stderr
+from naszilla.bo.util.print_utils import suppress_stdout_stderr
 
 class StanGpPP(DiscPP):
   """ Hierarchical GPs implemented with Stan """

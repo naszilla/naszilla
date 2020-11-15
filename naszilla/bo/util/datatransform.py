@@ -5,7 +5,6 @@ Classes for transforming data.
 from argparse import Namespace
 import numpy as np
 from sklearn.preprocessing import StandardScaler
-#import sklearn.preprocessing as sklp 
 
 class DataTransformer(object):
   """ Class for transforming data """

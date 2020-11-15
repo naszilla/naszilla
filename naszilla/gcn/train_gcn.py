@@ -12,9 +12,9 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torch.utils.data import DataLoader
 
-from gcn.dataset import Nb101Dataset
-from gcn.model import NeuralPredictor
-from gcn.utils import AverageMeter, AverageMeterGroup, get_logger, reset_seed, to_cuda
+from naszilla.gcn.dataset import Nb101Dataset
+from naszilla.gcn.model import NeuralPredictor
+from naszilla.gcn.utils import AverageMeter, AverageMeterGroup, get_logger, reset_seed, to_cuda
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print('device:', device)

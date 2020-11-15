@@ -7,7 +7,8 @@ import numpy as np
 import scipy.optimize as spo
 import george
 import emcee
-from bo.pp.pp_core import DiscPP
+
+from naszilla.bo.pp.pp_core import DiscPP
 
 class GeorgeGpPP(DiscPP):
   """ Hierarchical GPs implemented with George """

@@ -6,7 +6,7 @@ import sys
 import os
 import pickle
 
-from nas_bench_201.distances import *
+from naszilla.nas_bench_201.distances import *
 
 INPUT = 'input'
 OUTPUT = 'output'

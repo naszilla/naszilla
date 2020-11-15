@@ -8,11 +8,11 @@ import numpy as np
 import tensorflow as tf
 from argparse import Namespace
 
-from acquisition_functions import acq_fn
-from meta_neural_net import MetaNeuralnet
-from bo.bo.probo import ProBO
-from gcn.model import NeuralPredictor
-from gcn.train_gcn import fit, predict
+from naszilla.acquisition_functions import acq_fn
+from naszilla.meta_neural_net import MetaNeuralnet
+from naszilla.bo.bo.probo import ProBO
+from naszilla.gcn.model import NeuralPredictor
+from naszilla.gcn.train_gcn import fit, predict
 
 # default parameters for the NAS algorithms
 DEFAULT_NUM_INIT = 10

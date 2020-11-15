@@ -7,9 +7,9 @@ from nasbench import api
 from nas_201_api import NASBench201API as API
 import nasbench301 as nb
 
-from nas_bench_101.cell_101 import Cell101
-from nas_bench_201.cell_201 import Cell201
-from nas_bench_301.cell_301 import Cell301
+from naszilla.nas_bench_101.cell_101 import Cell101
+from naszilla.nas_bench_201.cell_201 import Cell201
+from naszilla.nas_bench_301.cell_301 import Cell301
 
 
 class Nasbench:

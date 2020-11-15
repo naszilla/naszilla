@@ -7,9 +7,9 @@ import pickle
 import numpy as np
 import copy
 
-from params import *
-from nas_benchmarks import Nasbench101, Nasbench201, Nasbench301
-from nas_algorithms import run_nas_algorithm
+from naszilla.params import *
+from naszilla.nas_benchmarks import Nasbench101, Nasbench201, Nasbench301
+from naszilla.nas_algorithms import run_nas_algorithm
 
 def run_experiments(args, save_dir):
 
