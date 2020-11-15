@@ -35,49 +35,34 @@ This repository contains the official code for the following three papers, inclu
 </table>
 
 ## Installation
-First clone this repository and install its requirements:
+Clone this repository and install its requirements (which includes [nasbench](https://github.com/google-research/nasbench), 
+[nas-bench-201](https://github.com/D-X-Y/NAS-Bench-201), and [nasbench301](https://github.com/automl/nasbench301)). 
+It may take a few minutes.
 ```bash
 git clone https://github.com/naszilla/naszilla
 cd naszilla
-pip install -e .
-cd ..
-```
-The previous commands will have installed nas-bench-201 automatically, but 101 and 301 
-need to be installed manually.
-### Installing NASBench-101/301
-Now install [nasbench101](https://github.com/google-research/nasbench):
-```bash
-git clone https://github.com/google-research/nasbench
-cd nasbench
-pip install -e .
-cd ..
-```
-Next, install [nasbench301](https://github.com/automl/nasbench301) (currently the pip
-version has an error):
-```bash
-git clone https://github.com/automl/nasbench301
-cd nasbench301
 cat requirements.txt | xargs -n 1 -L 1 pip install
-export PYTHONPATH="${PYTHONPATH}:$PWD"
+pip install -e .
 cd ..
 ```
-You might need to replace line 32 of `nasbench301/surrogate_models/surrogate_models.py`
+You might need to replace line 32 of `src/nasbench301/surrogate_models/surrogate_models.py`
 with a new path to the configspace file:
 ```python
 self.config_loader = utils.ConfigLoader(os.path.expanduser('~/nasbench301/configspace.json'))
 ```
-
-Finally, download the nas benchmark datasets (either with the terminal commands below,
+Next, download the nas benchmark datasets (either with the terminal commands below,
 or from their respective websites
-([nasbench101](https://github.com/google-research/nasbench),
-[nasbench201](https://github.com/D-X-Y/NAS-Bench-201), and
+([nasbench](https://github.com/google-research/nasbench),
+[nas-bench-201](https://github.com/D-X-Y/NAS-Bench-201), and
 [nasbench301](https://github.com/automl/nasbench301)).
+The versions recommended for use with naszilla are `nasbench_only108.tfrecord`, `NAS-Bench-201-v1_0-e61699.pth`, and `nasbench301_models_v0.9.zip`.
+If you use a different version, you might need to edit some of the naszilla code.
 ```bash
 # these files are 0.5GB, 2.1GB, and 1.6GB, respectively
 wget https://storage.googleapis.com/nasbench/nasbench_only108.tfrecord
+gdrive download 16Y0UwGisiouVRxW-W5hEtbxmcHw_0hF_
 wget https://ndownloader.figshare.com/files/24693026 -O nasbench301_models_v0.9.zip
 unzip nasbench301_models_v0.9.zip
-gdrive download 16Y0UwGisiouVRxW-W5hEtbxmcHw_0hF_
 # place all of them in one folder, e.g., ~/nas_benchmark_datasets
 ```
 Now you have successfully installed all of the requirements to run **eleven NAS
@@ -85,7 +70,7 @@ algorithms** on **three benchmark search spaces**!
 
 ### Test Installation
 
-You can test the installation of the benchmarks by running these commands:
+You can test the installation by running these commands:
 ```bash
 cd naszilla
 python naszilla/run_experiments.py --search_space nasbench_101 --algo_params all_algos --queries 30 --trials 1
@@ -110,6 +95,9 @@ see [these docs](docs/naszilla.md).
 
 ## Contributions
 Contributions are welcome!
+
+## Reproducibility
+If you have any questions about reproducing an experiment, please raise an issue or email `colin@abacus.ai`.
 
 ## Citation
 Please cite our papers if you use code from this repo:
