@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'naszilla',
-    version = '1.0.1',
+    version = '1.0',
     author = 'Colin White, Willie Neiswanger',
     author_email = 'crwhite@cs.cmu.edu',
     description = 'python framework for NAS algorithms on benchmark search spaces',
@@ -22,5 +22,26 @@ setup(
         'torchvision==0.6.0',
         'nas-bench-201==1.3',
         'pybnn'
+        'autograd>=1.3'
+        'click'
+        'Cython'
+        'ConfigSpace==0.4.12'
+        'ipython'
+        'lightgbm>=2.3.1'
+        'matplotlib'
+        'numpy'
+        'pandas'
+        'pathvalidate'
+        'Pillow>=7.1.2'
+        'psutil'
+        'scikit-image'
+        'scikit-learn>=0.23.1'
+        'scipy'
+        'seaborn'
+        'statsmodels'
+        'tensorboard==1.14.0'
+        'tensorflow-estimator'
+        'tqdm'
+        'xgboost'
     ]
 )
