@@ -48,7 +48,7 @@ cd ..
 You might need to replace line 32 of `src/nasbench301/surrogate_models/surrogate_models.py`
 with a new path to the configspace file:
 ```python
-self.config_loader = utils.ConfigLoader(os.path.expanduser('~/nasbench301/configspace.json'))
+self.config_loader = utils.ConfigLoader(os.path.expanduser('~/naszilla/src/nasbench301/configspace.json'))
 ```
 Next, download the nas benchmark datasets (either with the terminal commands below,
 or from their respective websites
@@ -58,7 +58,7 @@ or from their respective websites
 The versions recommended for use with naszilla are `nasbench_only108.tfrecord`, `NAS-Bench-201-v1_0-e61699.pth`, and `nasbench301_models_v0.9.zip`.
 If you use a different version, you might need to edit some of the naszilla code.
 ```bash
-# these files are 0.5GB, 2.1GB, and 1.6GB, respectively
+# these files are 0.5GB, 1.6GB, and 2.1GB, respectively
 wget https://storage.googleapis.com/nasbench/nasbench_only108.tfrecord
 gdrive download 16Y0UwGisiouVRxW-W5hEtbxmcHw_0hF_
 wget https://ndownloader.figshare.com/files/24693026 -O nasbench301_models_v0.9.zip
@@ -89,7 +89,7 @@ python naszilla/run_experiments.py --search_space nasbench_201 --dataset cifar10
 ```
 This will test several NAS algorithms against each other on the NASBench-201 search
 space. Note that NASBench-201 allows you to specify one of three datasets: cifar10, cifar100, or imagenet. 
-To customize your experiment, open `params.py`. Here, you can change the
+To customize your experiment, open `naszilla/params.py`. Here, you can change the
 algorithms and their hyperparameters. For details on running specific methods,
 see [these docs](docs/naszilla.md).
 
@@ -97,7 +97,8 @@ see [these docs](docs/naszilla.md).
 Contributions are welcome!
 
 ## Reproducibility
-If you have any questions about reproducing an experiment, please raise an issue or email `colin@abacus.ai`.
+If you have any questions about reproducing an experiment, please [open an issue](https://github.com/naszilla/naszilla/issues) 
+or email `colin@abacus.ai`.
 
 ## Citation
 Please cite our papers if you use code from this repo:
