@@ -60,7 +60,7 @@ If you use a different version, you might need to edit some of the naszilla code
 ```bash
 # these files are 0.5GB, 1.6GB, and 2.1GB, respectively
 wget https://storage.googleapis.com/nasbench/nasbench_only108.tfrecord
-gdrive download 16Y0UwGisiouVRxW-W5hEtbxmcHw_0hF_
+gdrive download 1SKW0Cu0u8-gb18zDpaAGi0f74UdXeGKs
 wget https://ndownloader.figshare.com/files/24693026 -O nasbench301_models_v0.9.zip
 unzip nasbench301_models_v0.9.zip
 # place all of them in one folder, e.g., ~/nas_benchmark_datasets
