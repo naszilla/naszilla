@@ -43,7 +43,6 @@ git clone https://github.com/naszilla/naszilla
 cd naszilla
 cat requirements.txt | xargs -n 1 -L 1 pip install
 pip install -e .
-cd ..
 ```
 You might need to replace line 32 of `src/nasbench301/surrogate_models/surrogate_models.py`
 with a new path to the configspace file:
@@ -58,13 +57,15 @@ or from their respective websites
 The versions recommended for use with naszilla are `nasbench_only108.tfrecord`, `NAS-Bench-201-v1_0-e61699.pth`, and `nasbench301_models_v0.9.zip`.
 If you use a different version, you might need to edit some of the naszilla code.
 ```bash
-# these files are 0.5GB, 1.6GB, and 2.1GB, respectively
+# these files are 0.5GB, 2.1GB, and 1.6GB, respectively
 wget https://storage.googleapis.com/nasbench/nasbench_only108.tfrecord
 wget https://ndownloader.figshare.com/files/25506206?private_link=7d47bf57803227af4909 -O NAS-Bench-201-v1_0-e61699.pth
 wget https://ndownloader.figshare.com/files/24693026 -O nasbench301_models_v0.9.zip
 unzip nasbench301_models_v0.9.zip
-# place all of them in one folder, e.g., ~/nas_benchmark_datasets
 ```
+Place the three downloaded benchmark data files in `~/nas_benchmark_datasets` (or choose
+another directory and edit line 15 of `naszilla/nas_benchmarks.py` accordingly).
+
 Now you have successfully installed all of the requirements to run **eleven NAS
 algorithms** on **three benchmark search spaces**!
 

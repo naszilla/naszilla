@@ -12,6 +12,9 @@ from naszilla.nas_bench_201.cell_201 import Cell201
 from naszilla.nas_bench_301.cell_301 import Cell301
 
 
+default_data_folder = '~/nas_benchmark_datasets/'
+
+
 class Nasbench:
 
     def get_cell(self, arch=None):
@@ -281,7 +284,7 @@ class Nasbench:
 class Nasbench101(Nasbench):
 
     def __init__(self,
-               data_folder='~/nas_benchmark_datasets/',
+               data_folder=default_data_folder,
                index_hash_folder='./',
                mf=False):
         self.mf = mf
@@ -342,7 +345,7 @@ class Nasbench201(Nasbench):
 
     def __init__(self,
                  dataset='cifar10',
-                 data_folder='~/nas_benchmark_datasets/',
+                 data_folder=default_data_folder,
                  version='1_0'):
         self.search_space = 'nasbench_201'
         self.dataset = dataset
@@ -374,7 +377,7 @@ class Nasbench201(Nasbench):
 class Nasbench301(Nasbench):
 
     def __init__(self,
-                 data_folder='~/nas_benchmark_datasets/'
+                 data_folder=default_data_folder
                 ):
         self.dataset = 'cifar10'
         self.search_space = 'nasbench_301'
