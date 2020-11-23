@@ -9,41 +9,18 @@ import numpy as np
 import torch
 
 
+def denormalize(num):
+    MEAN = 0.908192
+    STD = 0.023961
+
+    return num * STD + MEAN
+
 def reset_seed(seed):
     torch.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
     np.random.seed(seed)
     random.seed(seed)
     torch.backends.cudnn.deterministic = True
-
-
-def to_cuda(obj):
-    if torch.is_tensor(obj):
-        return obj.cuda()
-    if isinstance(obj, tuple):
-        return tuple(to_cuda(t) for t in obj)
-    if isinstance(obj, list):
-        return [to_cuda(t) for t in obj]
-    if isinstance(obj, dict):
-        return {k: to_cuda(v) for k, v in obj.items()}
-    if isinstance(obj, (int, float, str)):
-        return obj
-    raise ValueError("'%s' has unsupported type '%s'" % (obj, type(obj)))
-
-
-def get_logger():
-    time_format = "%m/%d %H:%M:%S"
-    fmt = "[%(asctime)s] %(levelname)s (%(name)s) %(message)s"
-    formatter = logging.Formatter(fmt, time_format)
-    logger = logging.getLogger()
-    if logger.hasHandlers():
-        logger.handlers.clear()
-
-    handler = logging.StreamHandler(sys.stdout)
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
-    logger.setLevel(logging.INFO)
-    return logger
 
 
 class AverageMeterGroup:

@@ -12,17 +12,16 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torch.utils.data import DataLoader
 
-from naszilla.gcn.dataset import Nb101Dataset
 from naszilla.gcn.model import NeuralPredictor
-from naszilla.gcn.utils import AverageMeter, AverageMeterGroup, get_logger, reset_seed, to_cuda
+from naszilla.gcn.utils import AverageMeterGroup, reset_seed, denormalize
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print('device:', device)
 
 
 def accuracy_mse(prediction, target, scale=100.):
-    prediction = Nb101Dataset.denormalize(prediction.detach()) * scale
-    target = Nb101Dataset.denormalize(target) * scale
+    prediction = denormalize(prediction.detach()) * scale
+    target = denormalize(target) * scale
     return F.mse_loss(prediction, target)
 
 
@@ -43,8 +42,6 @@ def fit(net,
     criterion = nn.MSELoss()
     optimizer = optim.Adam(net.parameters(), lr=lr, weight_decay=wd)
     lr_scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, epochs)
-
-    logger = get_logger()
 
     net.train()
 
@@ -76,11 +73,6 @@ def predict(net, xtest, eval_batch_size=1000):
             prediction_.append(prediction.cpu().numpy())
 
     prediction_ = np.concatenate(prediction_)
-
-    def denormalize(acc):
-        MEAN = 0.908192
-        STD = 0.023961
-        return acc * STD + MEAN
 
     def normalized_acc_to_loss(acc):
         return 100*(1 - denormalize(acc))
