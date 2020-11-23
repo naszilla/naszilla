@@ -3,6 +3,7 @@ import copy
 import itertools
 import random
 import pickle
+import torch
 
 from nasbench import api
 
@@ -160,7 +161,8 @@ class Cell101:
             MEAN = 0.908192
             STD = 0.023961
             acc = 1 - loss / 100
-            return (acc - MEAN) / STD
+            normalized = (acc - MEAN) / STD
+            return torch.tensor(normalized, dtype=torch.float32)
 
         op_map = [OUTPUT, INPUT, *OPS]
         ops_onehot = np.array([[i == op_map.index(op) for i in range(len(op_map))] for op in self.ops], dtype=np.float32)

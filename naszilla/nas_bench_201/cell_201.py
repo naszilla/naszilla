@@ -5,6 +5,7 @@ import random
 import sys
 import os
 import pickle
+import torch
 
 from naszilla.nas_bench_201.distances import *
 
@@ -67,7 +68,8 @@ class Cell201:
             MEAN = 0.908192
             STD = 0.023961
             acc = 1 - loss / 100
-            return (acc - MEAN) / STD
+            normalized = (acc - MEAN) / STD
+            return torch.tensor(normalized, dtype=torch.float32)
 
         op_map = [OUTPUT, INPUT, *OPS]
         ops = self.get_op_list()
