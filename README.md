@@ -111,11 +111,11 @@ Please cite our papers if you use code from this repo:
   year={2020}
 }
 
-@article{white2019bananas,
+@inproceedings{white2019bananas,
   title={BANANAS: Bayesian Optimization with Neural Architectures for Neural Architecture Search},
   author={White, Colin and Neiswanger, Willie and Savani, Yash},
-  journal={arXiv preprint arXiv:1910.11858},
-  year={2019}
+  booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
+  year={2021}
 }
 
 @article{white2020local,
