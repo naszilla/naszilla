@@ -4,6 +4,7 @@
 [Local Search is State of the Art for Neural Architecture Search Benchmarks](https://arxiv.org/abs/2005.02960)\
 Colin White, Sam Nolen, and Yash Savani.\
 _arXiv:2005.02960_.
+(Note: an updated version of the paper will be available on arXiv soon.)
 
 We study the simplest versions of local search, showing that local search achieves strong results on NASBench-101 (size 10^6) and NASBench-201 (size 10^4). See our paper for a theoretical study which characterizes the performance of local search on graph optimization problems, backed by simulation results.
 
@@ -24,10 +25,11 @@ This will test a few simple variants of local search against a few other NAS alg
 ## Citation
 Please cite [our paper](https://arxiv.org/abs/2005.02960) if you use code from this repo:
 ```bibtex
-@article{white2020local,
-  title={Local Search is State of the Art for Neural Architecture Search Benchmarks},
+@inproceedings{white2021exploring,
+  title={Exploring the Loss Landscape in Neural Architecture Search},
   author={White, Colin and Nolen, Sam and Savani, Yash},
-  journal={arXiv preprint arXiv:2005.02960},
-  year={2020}
+  booktitle={Uncertainty in Artificial Intelligence},
+  organization={PMLR},
+  year={2021}
 }
 ```
