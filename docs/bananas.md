@@ -36,11 +36,11 @@ Note: to run experiments on the DARTS search space directly (without using nasbe
 Please cite [our paper](https://arxiv.org/abs/1910.11858) if you use code from this repo:
 
 ```bibtex
-@article{white2019bananas,
+@inproceedings{white2021bananas,
   title={BANANAS: Bayesian Optimization with Neural Architectures for Neural Architecture Search},
   author={White, Colin and Neiswanger, Willie and Savani, Yash},
-  journal={arXiv preprint arXiv:1910.11858},
-  year={2019}
+  booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
+  year={2021}
 }
 ```
 
