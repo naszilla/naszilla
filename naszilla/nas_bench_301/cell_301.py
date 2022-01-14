@@ -177,7 +177,7 @@ class Cell301:
         paths = [[], []]
 
         for i, cell in enumerate(self.arch):
-            for j in range(len(OPS)):
+            for j in range(8):
                 if cell[j][0] == 0:
                     path = [INPUT_1, OPS[cell[j][1]]]
                     path_builder[i][j//2].append(path)
