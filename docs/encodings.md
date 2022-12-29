@@ -11,7 +11,7 @@ Many algorithms for neural architecture search (NAS) represent each neural archi
 </p>
 
 ## Installation
-See the [main readme file](https://github.com/naszilla/nas_encodings/blob/master/README.md) for installation instructions.
+See the [main readme file](https://github.com/naszilla/nas-encodings/blob/master/README.md) for installation instructions.
 
 #### Download index-hash
 Some of the path-based encoding methods require a hash map from path indices to cell architectures. We have created a pickle file which contains this hash map (size 57MB), located [here](https://drive.google.com/file/d/1yMRFxT6u3ZyfiWUPhtQ_B9FbuGN3X-Nf/view?usp=sharing). Place it in the top level folder of this repo.
